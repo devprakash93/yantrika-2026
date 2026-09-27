@@ -11,7 +11,6 @@ import Gallery from './pages/Gallery';
 import FAQ from './pages/FAQ';
 import Contact from './pages/Contact';
 import Search from './pages/Search';
-import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -26,7 +25,6 @@ function App() {
             <Route path="/events/:id" element={<EventDetails />} />
             <Route path="/schedule" element={<Schedule />} />
             <Route path="/search" element={<Search />} />
-            <Route path="/profile" element={<Profile />} />
             <Route path="/about" element={<About />} />
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/faq" element={<FAQ />} />

@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Ticket, CalendarClock, Search, CircleUser } from 'lucide-react';
+import { Home, Ticket, CalendarClock, Search, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '../lib/utils';
 
@@ -8,7 +8,7 @@ const navItems = [
   { name: 'Events', path: '/events', icon: Ticket },
   { name: 'Schedule', path: '/schedule', icon: CalendarClock },
   { name: 'Search', path: '/search', icon: Search },
-  { name: 'Profile', path: '/profile', icon: CircleUser },
+  { name: 'About', path: '/about', icon: Info },
 ];
 
 export default function MobileNav() {
@@ -18,7 +18,7 @@ export default function MobileNav() {
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[#E2E8F0] pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_rgba(0,0,0,0.03)] h-[76px] flex items-center justify-between px-2">
       {navItems.map((item) => {
         const isActive = location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path));
-        
+
         return (
           <Link
             key={item.path}
@@ -34,11 +34,9 @@ export default function MobileNav() {
             >
               <item.icon className="h-6 w-6 stroke-[1.5]" />
             </motion.div>
-            
+
             <motion.span
-              animate={{
-                color: isActive ? '#087BFF' : '#64748B'
-              }}
+              animate={{ color: isActive ? '#087BFF' : '#64748B' }}
               className={cn(
                 "text-[10px] font-semibold tracking-wide",
                 isActive ? "text-[#087BFF]" : "text-[#64748B]"
