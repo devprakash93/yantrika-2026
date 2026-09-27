@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Bell } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 const links = [
@@ -14,7 +14,6 @@ const links = [
 ];
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
@@ -26,10 +25,6 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    setIsOpen(false);
-  }, [location.pathname]);
-
   return (
     <nav className={cn(
       "fixed top-0 w-full z-50 transition-all duration-300 border-b",
@@ -40,11 +35,10 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-[72px]">
           <Link to="/" className="flex items-center">
-            {/* We're using a dark logo for the white navbar. Assuming the logo file is suitable or needs invert. Since they provided a metallic logo, we'll keep it as is, but scale it appropriately. */}
             <img src="/logo.png" alt="YANTRIKA 2026 Logo" className="h-9 w-auto" />
           </Link>
 
-          {/* Desktop Nav */}
+          {/* Desktop Nav - Hidden on mobile */}
           <div className="hidden md:flex items-center space-x-8">
             <div className="flex space-x-6">
               {links.map((link) => (
@@ -70,45 +64,15 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Right Action - Bell instead of Hamburger */}
           <div className="md:hidden flex items-center">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-[#0B1220] p-2 focus:outline-none"
-            >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            <button className="relative p-2 text-[#0B1220] hover:text-[#087BFF] transition-colors focus:outline-none">
+              <Bell className="h-6 w-6 stroke-[1.5]" />
+              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
             </button>
           </div>
         </div>
       </div>
-
-      {/* Mobile Nav */}
-      {isOpen && (
-        <div className="md:hidden bg-white border-b border-[#E2E8F0] shadow-lg absolute w-full left-0">
-          <div className="px-4 pt-4 pb-6 space-y-2">
-            {links.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={cn(
-                  "block px-4 py-3 rounded-lg text-sm font-semibold transition-all",
-                  location.pathname === link.path
-                    ? "bg-[#087BFF]/10 text-[#087BFF]"
-                    : "text-[#64748B] hover:bg-[#F5F8FC] hover:text-[#0B1220]"
-                )}
-              >
-                {link.name}
-              </Link>
-            ))}
-            <Link
-              to="/events"
-              className="flex items-center justify-center w-full mt-4 bg-[#087BFF] text-white px-4 py-3 rounded-[10px] text-sm font-semibold shadow-sm"
-            >
-              REGISTER NOW
-            </Link>
-          </div>
-        </div>
-      )}
     </nav>
   );
 }

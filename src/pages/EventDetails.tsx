@@ -76,7 +76,7 @@ export default function EventDetails() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 pb-24 md:pb-0">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-16">
             <section>
@@ -127,8 +127,8 @@ export default function EventDetails() {
             </section>
           </div>
 
-          {/* Sidebar */}
-          <div>
+          {/* Sidebar (Desktop) */}
+          <div className="hidden md:block">
             <div className="bg-white p-8 rounded-[16px] border border-[#E2E8F0] shadow-[0_4px_20px_rgba(0,0,0,0.03)] sticky top-28">
               <div className="text-center mb-8">
                 <h3 className="font-bold text-xl font-display mb-2 text-[#0B1220]">Ready to Compete?</h3>
@@ -168,6 +168,16 @@ export default function EventDetails() {
           </div>
         </div>
       </div>
+      
+      {/* Mobile Sticky Bottom CTA */}
+      <div className="md:hidden fixed bottom-[76px] left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-[#E2E8F0] z-40 shadow-[0_-10px_20px_rgba(0,0,0,0.05)]">
+        <button 
+          onClick={() => setIsModalOpen(true)}
+          className="w-full flex items-center justify-center rounded-[12px] text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed bg-[#087BFF] text-white shadow-sm h-14"
+          disabled={event.status !== 'Registration Open'}
+        >
+          {event.status === 'Registration Open' ? 'REGISTER NOW' : 'NOT OPEN YET'}
+        </button>
     </div>
   );
 }
