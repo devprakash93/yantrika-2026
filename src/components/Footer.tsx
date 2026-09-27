@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Hexagon } from 'lucide-react';
+
 
 export default function Footer() {
   return (
