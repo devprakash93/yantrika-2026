@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Instagram, Linkedin, Twitter, Youtube } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -50,9 +50,9 @@ export default function Footer() {
               CONNECT
             </h3>
             <ul className="space-y-4 text-sm font-medium text-[#CBD5E1] mb-6">
-              <li><a href="#" className="hover:text-[#00C8FF] transition-colors flex items-center"><Instagram className="w-4 h-4 mr-3" /> Instagram</a></li>
-              <li><a href="#" className="hover:text-[#00C8FF] transition-colors flex items-center"><Linkedin className="w-4 h-4 mr-3" /> LinkedIn</a></li>
-              <li><a href="#" className="hover:text-[#00C8FF] transition-colors flex items-center"><Youtube className="w-4 h-4 mr-3" /> YouTube</a></li>
+              <li><a href="#" className="hover:text-[#00C8FF] transition-colors flex items-center"><ExternalLink className="w-4 h-4 mr-3" /> Instagram</a></li>
+              <li><a href="#" className="hover:text-[#00C8FF] transition-colors flex items-center"><ExternalLink className="w-4 h-4 mr-3" /> LinkedIn</a></li>
+              <li><a href="#" className="hover:text-[#00C8FF] transition-colors flex items-center"><ExternalLink className="w-4 h-4 mr-3" /> YouTube</a></li>
               <li><Link to="/contact" className="hover:text-[#00C8FF] transition-colors block pt-2">Contact Us &rarr;</Link></li>
             </ul>
           </div>

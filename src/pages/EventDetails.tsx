@@ -178,6 +178,8 @@ export default function EventDetails() {
         >
           {event.status === 'Registration Open' ? 'REGISTER NOW' : 'NOT OPEN YET'}
         </button>
+      </div>
     </div>
   );
 }
+

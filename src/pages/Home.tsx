@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Code, Palette, Gamepad2, ChevronRight, Zap } from 'lucide-react';
+import { ArrowRight, Code, Palette, Gamepad2 } from 'lucide-react';
 import { events } from '../data';
 import Countdown from '../components/Countdown';
 
