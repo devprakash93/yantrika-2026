@@ -9,9 +9,8 @@ export default function Footer() {
           
           {/* Brand */}
           <div className="col-span-1 md:col-span-1">
-            <Link to="/" className="flex items-center space-x-2 mb-4">
-              <Hexagon className="h-8 w-8 text-primary" />
-              <span className="font-display font-bold text-2xl tracking-tight">YANTRIKA 2026</span>
+            <Link to="/" className="flex items-center mb-6">
+              <img src="/logo.png" alt="YANTRIKA 2026 Logo" className="h-12 w-auto" />
             </Link>
             <p className="text-muted-foreground text-sm mb-6">
               Organized by Department of Computer Science and Engineering, School of Engineering & Technology, DRIEMS University.

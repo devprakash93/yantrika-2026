@@ -49,11 +49,9 @@ export default function Home() {
               Official Technical & Cultural Fest
             </div>
             
-            <h1 className="font-display text-6xl sm:text-7xl md:text-8xl lg:text-[140px] font-black tracking-tighter mb-6 leading-[0.9]">
-              YANTRIKA<br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-600 to-primary bg-[length:200%_auto] animate-gradient-x">
-                2026
-              </span>
+            <h1 className="mb-6 flex justify-center">
+              <span className="sr-only">YANTRIKA 2026</span>
+              <img src="/logo.png" alt="YANTRIKA 2026 Logo" className="w-full max-w-4xl h-auto drop-shadow-2xl hover:scale-105 transition-transform duration-700" />
             </h1>
             
             <p className="text-xl md:text-2xl text-muted-foreground font-medium mb-10 max-w-3xl mx-auto leading-relaxed">

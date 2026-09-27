@@ -37,9 +37,8 @@ export default function Navbar() {
     )}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <Link to="/" className="flex items-center space-x-2">
-            <Hexagon className="h-8 w-8 text-primary" />
-            <span className="font-display font-bold text-xl tracking-tight">YANTRIKA 2026</span>
+          <Link to="/" className="flex items-center">
+            <img src="/logo.png" alt="YANTRIKA 2026 Logo" className="h-10 w-auto drop-shadow-md" />
           </Link>
 
           {/* Desktop Nav */}
