@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { events } from '../data';
-import { ArrowLeft, Calendar, Clock, MapPin, Users, IndianRupee, Trophy, Info } from 'lucide-react';
+import { ArrowLeft, Calendar, MapPin, Users, IndianRupee, Trophy, Info } from 'lucide-react';
 import RegistrationModal from '../components/RegistrationModal';
 import { motion } from 'framer-motion';
 
