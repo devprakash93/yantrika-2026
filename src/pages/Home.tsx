@@ -49,13 +49,19 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row justify-center gap-5">
+            <div className="flex flex-col sm:flex-row justify-center gap-5 mb-16">
               <Link to="/events" className="inline-flex items-center justify-center rounded-[10px] text-sm font-semibold transition-all bg-[#087BFF] text-white hover:bg-[#0667D9] hover:-translate-y-[2px] hover:shadow-[0_8px_25px_rgba(8,123,255,0.20)] h-[52px] px-8">
                 EXPLORE EVENTS
               </Link>
               <Link to="/events" className="inline-flex items-center justify-center rounded-[10px] text-sm font-semibold transition-all border border-[#CBD5E1]/30 bg-transparent text-white hover:border-[#087BFF] hover:text-[#087BFF] h-[52px] px-8">
                 REGISTER NOW
               </Link>
+            </div>
+
+            {/* Countdown — inside hero */}
+            <div className="w-full border-t border-[#CBD5E1]/10 pt-12">
+              <p className="text-[11px] font-bold tracking-[0.25em] text-[#64748B] uppercase mb-2">The Countdown Has Begun</p>
+              <Countdown />
             </div>
           </motion.div>
         </div>
@@ -192,18 +198,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 13. COUNTDOWN */}
-      <section className="py-24 bg-[#07111F] relative overflow-hidden">
-        <div className="absolute inset-0 bg-tech-grid opacity-10"></div>
-        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
-          <h2 className="text-3xl md:text-5xl font-display font-bold text-white tracking-tight mb-16">
-            THE COUNTDOWN<br/>HAS BEGUN.
-          </h2>
-          <div className="w-full max-w-2xl mx-auto">
-            <Countdown />
-          </div>
-        </div>
-      </section>
 
       {/* 15. REGISTRATION CTA */}
       <section className="py-32 bg-[#0B1F36] relative overflow-hidden border-t border-[#07111F]">
