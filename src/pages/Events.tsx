@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { events } from '../data';
-import { Search, Filter } from 'lucide-react';
+import { Search, Filter, ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const CATEGORY_MAP: Record<string, string[]> = {
@@ -31,6 +31,9 @@ export default function Events() {
     <div className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="mb-12 relative z-10">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          <Link to="/" className="inline-flex items-center text-sm font-bold text-gray-500 hover:text-primary mb-6 transition-colors">
+            <ArrowLeft className="h-4 w-4 mr-2" /> Back to Home
+          </Link>
           <h1 className="text-4xl md:text-6xl font-display font-black mb-6 tracking-tight">
             Events <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-500">Directory</span>
           </h1>
