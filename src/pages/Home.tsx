@@ -1,218 +1,189 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Calendar, MapPin, Code, Palette, Gamepad2, Cpu, Zap, Trophy, Users, ChevronRight } from 'lucide-react';
+import { ArrowRight, Code, Palette, Gamepad2, ChevronRight, Zap } from 'lucide-react';
 import { events } from '../data';
 import Countdown from '../components/Countdown';
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground overflow-hidden">
-      {/* Announcement Bar */}
-      <div className="bg-primary/10 border-b border-primary/20 text-primary py-3 px-4 text-center text-sm font-bold tracking-wide backdrop-blur-sm relative z-50">
-        <span className="animate-pulse mr-2">⚡</span> Registrations for YANTRIKA 2026 are opening soon! 
-        <Link to="/events" className="underline underline-offset-4 ml-3 hover:text-white transition-colors">View Events &rarr;</Link>
-      </div>
-
-      {/* Hero Section */}
-      <section className="relative min-h-[95vh] flex items-center justify-center pt-20 pb-32">
-        {/* Animated Background */}
+    <div className="flex flex-col min-h-screen font-sans bg-white text-[#0B1220]">
+      
+      {/* 4. HERO SECTION */}
+      <section className="relative min-h-[90vh] bg-[#07111F] flex items-center justify-center pt-24 pb-16 overflow-hidden">
+        {/* Subtle technical background details */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-grid-pattern opacity-30 mix-blend-overlay"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background"></div>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent"></div>
-          
-          <motion.div 
-            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[120px]" 
-          />
-          <motion.div 
-            animate={{ scale: [1, 1.5, 1], opacity: [0.2, 0.4, 0.2] }}
-            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[100px]" 
-          />
+          <div className="absolute inset-0 bg-tech-grid opacity-5"></div>
+          {/* Subtle gradient accent for the hero */}
+          <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#087BFF]/10 via-transparent to-transparent"></div>
         </div>
 
-        <div className="relative z-10 text-center px-4 w-full max-w-7xl mx-auto">
+        <div className="relative z-10 text-center px-4 w-full max-w-7xl mx-auto flex flex-col items-center">
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="flex flex-col items-center w-full"
           >
-            <div className="inline-flex items-center rounded-full border border-primary/40 bg-primary/10 px-5 py-2 text-sm font-bold text-primary mb-12 shadow-[0_0_15px_rgba(14,165,233,0.3)] backdrop-blur-md">
-              <Zap className="h-4 w-4 mr-2" />
-              THE ULTIMATE TECHNO-CULTURAL FEST
+            <div className="text-[11px] md:text-xs font-bold tracking-[0.2em] text-[#CBD5E1] uppercase mb-12 border border-[#CBD5E1]/20 rounded-full px-5 py-2 inline-block">
+              DRIEMS UNIVERSITY TECHNICAL FEST 2026
             </div>
             
-            <h1 className="mb-10 flex justify-center">
+            <h1 className="mb-10 w-full flex justify-center">
               <span className="sr-only">YANTRIKA 2026</span>
-              <img src="/logo.png" alt="YANTRIKA 2026 Logo" className="w-full max-w-4xl h-auto drop-shadow-2xl hover:scale-[1.02] transition-transform duration-700 glow-box rounded-3xl" />
+              <img src="/logo.png" alt="YANTRIKA 2026 Logo" className="w-full max-w-3xl h-auto drop-shadow-xl" />
             </h1>
             
-            <p className="text-xl md:text-3xl text-gray-400 font-medium mb-12 max-w-3xl mx-auto leading-relaxed">
-              Where Technology Meets Creativity.<br/>
-              <span className="text-white glow-text font-bold">Explore. Innovate. Compete. Create.</span>
+            <p className="text-sm md:text-base text-[#CBD5E1] font-medium mb-12 tracking-[0.2em] uppercase max-w-2xl mx-auto">
+              WHERE TECHNOLOGY MEETS CREATIVITY
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16 text-sm md:text-base font-bold tracking-widest uppercase">
-              <div className="flex items-center gap-3 bg-secondary/80 backdrop-blur-md py-3 px-6 rounded-xl border border-white/5 shadow-2xl">
-                <Calendar className="h-5 w-5 text-primary" />
-                <span className="text-gray-200">08–09 OCTOBER 2026</span>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-8 md:gap-16 mb-16 text-sm font-semibold tracking-widest text-white uppercase">
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-[#64748B] text-xs">Date</span>
+                <span>08 — 09 OCTOBER 2026</span>
               </div>
-              <div className="flex items-center gap-3 bg-secondary/80 backdrop-blur-md py-3 px-6 rounded-xl border border-white/5 shadow-2xl">
-                <MapPin className="h-5 w-5 text-primary" />
-                <span className="text-gray-200">DRIEMS UNIVERSITY</span>
+              <div className="hidden sm:block w-px h-8 bg-[#CBD5E1]/20"></div>
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-[#64748B] text-xs">Location</span>
+                <span>DRIEMS UNIVERSITY</span>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row justify-center gap-6 mb-20">
-              <Link to="/events" className="group inline-flex items-center justify-center rounded-xl text-base font-bold transition-all bg-primary text-white shadow-[0_0_20px_rgba(14,165,233,0.4)] hover:shadow-[0_0_40px_rgba(14,165,233,0.6)] hover:bg-primary/90 h-16 px-10">
-                EXPLORE EVENTS <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            <div className="flex flex-col sm:flex-row justify-center gap-5">
+              <Link to="/events" className="inline-flex items-center justify-center rounded-[10px] text-sm font-semibold transition-all bg-[#087BFF] text-white hover:bg-[#0667D9] hover:-translate-y-[2px] hover:shadow-[0_8px_25px_rgba(8,123,255,0.20)] h-[52px] px-8">
+                EXPLORE EVENTS
               </Link>
-              <Link to="/events" className="inline-flex items-center justify-center rounded-xl text-base font-bold transition-all border-2 border-primary/50 bg-background/50 backdrop-blur-sm text-primary hover:bg-primary/10 hover:border-primary h-16 px-10">
+              <Link to="/events" className="inline-flex items-center justify-center rounded-[10px] text-sm font-semibold transition-all border border-[#CBD5E1]/30 bg-transparent text-white hover:border-[#087BFF] hover:text-[#087BFF] h-[52px] px-8">
                 REGISTER NOW
               </Link>
-            </div>
-
-            <div className="pt-10 border-t border-white/10 max-w-4xl mx-auto bg-card/30 backdrop-blur-lg p-8 rounded-3xl border border-white/5">
-              <p className="text-sm font-bold text-primary tracking-widest uppercase mb-6 glow-text">Countdown to System Initialization</p>
-              <Countdown />
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Experience Section */}
-      <section className="py-32 relative overflow-hidden border-t border-white/5">
-        <div className="absolute inset-0 bg-secondary/30"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-20">
-            <h2 className="text-5xl md:text-6xl font-display font-black mb-6 uppercase tracking-tighter">
-              THE <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-600">YANTRIKA</span> EXPERIENCE
-            </h2>
-            <p className="text-xl text-gray-400 font-medium tracking-wide">BUILD. COMPETE. PERFORM. CREATE.</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              { title: "BUILD", icon: Cpu, desc: "Technical challenges and engineering competitions." },
-              { title: "COMPETE", icon: Gamepad2, desc: "Competitive events, gaming, and robotics." },
-              { title: "PERFORM", icon: Zap, desc: "Cultural, dance, and stage activities." },
-              { title: "CREATE", icon: Palette, desc: "Photography, reels, and creative challenges." },
-            ].map((pillar, i) => (
-              <div key={i} className="group bg-card/40 border border-white/5 rounded-3xl p-8 backdrop-blur-md hover:bg-card hover:border-primary/50 transition-all duration-300 hover:-translate-y-2 glow-box">
-                <pillar.icon className="h-14 w-14 text-primary mb-6 group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_0_15px_rgba(14,165,233,0.5)]" />
-                <h3 className="text-2xl font-black font-display tracking-wide mb-4 text-white group-hover:text-primary transition-colors">{pillar.title}</h3>
-                <p className="text-gray-400 leading-relaxed font-medium">{pillar.desc}</p>
-              </div>
-            ))}
+      {/* 10. ABOUT SECTION */}
+      <section className="py-32 bg-white relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <h2 className="text-4xl md:text-6xl font-display font-bold text-[#0B1220] mb-8 leading-[1.1] tracking-tight">
+                MORE THAN A FEST.<br/>
+                A PLATFORM TO CREATE.
+              </h2>
+              <p className="text-lg text-[#64748B] mb-12 leading-relaxed max-w-lg">
+                YANTRIKA 2026 brings together thousands of students through intense technical challenges, breathtaking creative competitions, and competitive gaming across a sprawling university campus.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-x-8 gap-y-12">
+              {[
+                { number: "2", label: "DAYS" },
+                { number: "30+", label: "EVENTS" },
+                { number: "∞", label: "IDEAS" },
+                { number: "1", label: "CAMPUS" }
+              ].map((stat, i) => (
+                <div key={i} className="flex flex-col">
+                  <span className="text-5xl md:text-7xl font-display font-bold text-[#087BFF] mb-2">{stat.number}</span>
+                  <span className="text-sm font-semibold tracking-widest text-[#64748B] uppercase">{stat.label}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="py-32 relative">
-        <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+      {/* 11. EVENT CATEGORY SECTION */}
+      <section className="py-32 bg-[#F5F8FC] relative border-y border-[#E2E8F0]">
+        <div className="absolute inset-0 bg-tech-grid-dark opacity-[0.02]"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-5xl font-display font-black mb-6 uppercase tracking-tighter">Event Domains</h2>
-            <p className="text-xl text-gray-400">Select your arena and compete with the best minds.</p>
+          <div className="mb-16">
+            <h2 className="text-4xl md:text-5xl font-display font-bold text-[#0B1220] tracking-tight">CHOOSE YOUR ARENA</h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Link to="/events?category=Technical" className="group block bg-card/60 backdrop-blur-xl rounded-3xl p-10 shadow-2xl border border-white/10 hover:border-primary transition-all duration-500 hover:-translate-y-3 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              <div className="relative z-10">
-                <div className="h-20 w-20 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500 border border-primary/20">
-                  <Code className="h-10 w-10 drop-shadow-[0_0_10px_rgba(14,165,233,0.8)]" />
-                </div>
-                <h3 className="text-3xl font-black font-display mb-4 text-white">Technical</h3>
-                <p className="text-gray-400 mb-8 font-medium leading-relaxed">For technology, engineering, robotics, coding and innovation-oriented competitions.</p>
-                <span className="text-primary font-bold flex items-center uppercase tracking-widest text-sm">
-                  Access Terminal <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-2 transition-transform" />
-                </span>
+            <Link to="/events?category=Technical" className="group bg-white rounded-[16px] p-10 border border-[#E2E8F0] hover:border-[#087BFF] transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity">
+                <Code className="w-40 h-40" />
               </div>
+              <div className="h-12 w-12 rounded-full bg-[#087BFF]/10 text-[#087BFF] flex items-center justify-center mb-8">
+                <Code className="h-5 w-5" />
+              </div>
+              <h3 className="text-2xl font-display font-bold text-[#0B1220] mb-4">TECHNICAL</h3>
+              <p className="text-[#64748B] font-medium">Build. Solve. Innovate.</p>
             </Link>
 
-            <Link to="/events?category=Cultural" className="group block bg-card/60 backdrop-blur-xl rounded-3xl p-10 shadow-2xl border border-white/10 hover:border-pink-500 transition-all duration-500 hover:-translate-y-3 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              <div className="relative z-10">
-                <div className="h-20 w-20 bg-pink-500/10 text-pink-500 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500 border border-pink-500/20">
-                  <Palette className="h-10 w-10 drop-shadow-[0_0_10px_rgba(236,72,153,0.8)]" />
-                </div>
-                <h3 className="text-3xl font-black font-display mb-4 text-white">Cultural</h3>
-                <p className="text-gray-400 mb-8 font-medium leading-relaxed">For performance, creativity, photography, reels and entertainment on the big stage.</p>
-                <span className="text-pink-500 font-bold flex items-center uppercase tracking-widest text-sm">
-                  Access Terminal <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-2 transition-transform" />
-                </span>
+            <Link to="/events?category=Cultural" className="group bg-white rounded-[16px] p-10 border border-[#E2E8F0] hover:border-[#087BFF] transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity">
+                <Palette className="w-40 h-40" />
               </div>
+              <div className="h-12 w-12 rounded-full bg-[#7C3AED]/10 text-[#7C3AED] flex items-center justify-center mb-8">
+                <Palette className="h-5 w-5" />
+              </div>
+              <h3 className="text-2xl font-display font-bold text-[#0B1220] mb-4">CULTURAL</h3>
+              <p className="text-[#64748B] font-medium">Perform. Create. Express.</p>
             </Link>
 
-            <Link to="/events?category=Gaming" className="group block bg-card/60 backdrop-blur-xl rounded-3xl p-10 shadow-2xl border border-white/10 hover:border-purple-500 transition-all duration-500 hover:-translate-y-3 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              <div className="relative z-10">
-                <div className="h-20 w-20 bg-purple-500/10 text-purple-500 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500 border border-purple-500/20">
-                  <Gamepad2 className="h-10 w-10 drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]" />
-                </div>
-                <h3 className="text-3xl font-black font-display mb-4 text-white">Gaming</h3>
-                <p className="text-gray-400 mb-8 font-medium leading-relaxed">For competitive gaming, BGMI, Valorant, and other intense esports activities.</p>
-                <span className="text-purple-500 font-bold flex items-center uppercase tracking-widest text-sm">
-                  Access Terminal <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-2 transition-transform" />
-                </span>
+            <Link to="/events?category=Gaming" className="group bg-white rounded-[16px] p-10 border border-[#E2E8F0] hover:border-[#087BFF] transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity">
+                <Gamepad2 className="w-40 h-40" />
               </div>
+              <div className="h-12 w-12 rounded-full bg-[#111827]/5 text-[#111827] flex items-center justify-center mb-8">
+                <Gamepad2 className="h-5 w-5" />
+              </div>
+              <h3 className="text-2xl font-display font-bold text-[#0B1220] mb-4">GAMING</h3>
+              <p className="text-[#64748B] font-medium">Compete. Strategize. Win.</p>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Featured Events Section */}
-      <section className="py-32 bg-secondary/20 border-y border-white/5 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      {/* 12. FEATURED EVENTS */}
+      <section className="py-32 bg-white relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-            <div className="max-w-2xl">
-              <h2 className="text-5xl font-display font-black mb-6 uppercase tracking-tighter">Featured Events</h2>
-              <p className="text-xl text-gray-400 font-medium">The most anticipated competitions of YANTRIKA 2026.</p>
-            </div>
-            <Link to="/events" className="inline-flex items-center justify-center rounded-xl border border-primary/50 bg-primary/10 text-primary hover:bg-primary/20 h-14 px-8 font-bold uppercase tracking-widest text-sm transition-all shadow-[0_0_15px_rgba(14,165,233,0.15)]">
-              View All Events <ChevronRight className="ml-2 h-4 w-4" />
+            <h2 className="text-4xl md:text-5xl font-display font-bold text-[#0B1220] leading-[1.1] tracking-tight">
+              EVENTS THAT<br/>DEFINE YANTRIKA
+            </h2>
+            <Link to="/events" className="inline-flex items-center text-[#087BFF] font-semibold hover:text-[#0667D9] transition-colors">
+              VIEW ALL EVENTS <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {events.slice(0, 3).map((event) => (
-              <div key={event.id} className="group flex flex-col bg-card/50 backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden hover:border-primary/50 hover:shadow-[0_0_30px_rgba(14,165,233,0.2)] transition-all duration-500 hover:-translate-y-2">
-                <div className="h-56 bg-black relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent z-10" />
-                  <img 
-                    src={event.category === 'Cultural' ? 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&q=80' : 
-                         event.category === 'Robotics & Hardware' ? 'https://images.unsplash.com/photo-1561557944-6e7860d1a7eb?auto=format&fit=crop&q=80' :
-                         'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80'} 
-                    alt={event.name} 
-                    className="w-full h-full object-cover group-hover:scale-110 group-hover:opacity-60 opacity-40 transition-all duration-700" 
-                  />
-                  <div className="absolute bottom-6 left-6 z-20">
-                    <span className="inline-flex items-center rounded-lg bg-primary/20 backdrop-blur-md px-3 py-1.5 text-xs font-bold text-primary border border-primary/30 uppercase tracking-widest shadow-[0_0_10px_rgba(14,165,233,0.3)]">
+              <div key={event.id} className="group bg-white rounded-[16px] border border-[#E2E8F0] hover:border-[#087BFF] transition-all duration-300 hover:-translate-y-1 flex flex-col overflow-hidden">
+                <div className="p-8 flex-grow">
+                  <div className="mb-6">
+                    <span className={`text-[10px] font-bold tracking-widest uppercase ${
+                      event.category === 'Technical' || event.category === 'Robotics & Hardware' ? 'text-[#087BFF]' : 
+                      event.category === 'Cultural' ? 'text-[#7C3AED]' : 'text-[#111827]'
+                    }`}>
                       {event.category}
                     </span>
                   </div>
-                </div>
-                <div className="p-8 flex-grow flex flex-col relative z-20 -mt-4">
-                  <h3 className="text-3xl font-black font-display mb-3 text-white">{event.name}</h3>
-                  <p className="text-gray-400 line-clamp-2 mb-8 flex-grow font-medium">{event.description}</p>
                   
-                  <div className="grid grid-cols-2 gap-4 mb-8 text-sm">
-                    <div className="flex flex-col bg-white/5 p-3 rounded-xl border border-white/5">
-                      <span className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">Participants</span>
-                      <span className="font-bold text-white flex items-center"><Users className="w-4 h-4 mr-2 text-primary" /> {event.participants}</span>
+                  <h3 className="text-2xl font-display font-bold text-[#0B1220] mb-3 line-clamp-1">{event.name}</h3>
+                  <p className="text-[#64748B] text-sm line-clamp-2 mb-8 leading-relaxed">{event.description}</p>
+                  
+                  <div className="space-y-3 mb-8">
+                    <div className="flex justify-between text-sm border-b border-[#E2E8F0] pb-2">
+                      <span className="text-[#64748B]">Date</span>
+                      <span className="font-semibold text-[#0B1220]">{event.date}</span>
                     </div>
-                    <div className="flex flex-col bg-white/5 p-3 rounded-xl border border-white/5">
-                      <span className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">Fee</span>
-                      <span className="font-bold text-white flex items-center"><Trophy className="w-4 h-4 mr-2 text-primary" /> {event.fee}</span>
+                    <div className="flex justify-between text-sm border-b border-[#E2E8F0] pb-2">
+                      <span className="text-[#64748B]">Team</span>
+                      <span className="font-semibold text-[#0B1220]">{event.participants}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-[#64748B]">Fee</span>
+                      <span className="font-semibold text-[#0B1220]">{event.fee}</span>
                     </div>
                   </div>
-                  
-                  <Link to={`/events/${event.id}`} className="w-full inline-flex items-center justify-center rounded-xl bg-primary/10 text-primary font-bold hover:bg-primary hover:text-white transition-all h-14 border border-primary/20 hover:shadow-[0_0_20px_rgba(14,165,233,0.4)]">
-                    INITIALIZE DETAILS
+                </div>
+                
+                <div className="px-8 pb-8 flex flex-col gap-3">
+                  <Link to={`/events/${event.id}`} className="w-full inline-flex items-center justify-center rounded-[10px] text-sm font-semibold border border-[#CBD5E1] bg-transparent text-[#0B1220] hover:border-[#087BFF] hover:text-[#087BFF] h-11 transition-colors">
+                    VIEW DETAILS
                   </Link>
                 </div>
               </div>
@@ -221,42 +192,34 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="py-32 relative overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-grid-pattern opacity-20"></div>
-          <div className="absolute inset-0 bg-primary/5"></div>
-          <motion.div 
-            animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.3, 0.1] }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/20 rounded-full blur-[120px]" 
-          />
-        </div>
-        
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          <div className="inline-flex items-center justify-center h-20 w-20 bg-primary/10 rounded-full mb-8 border border-primary/20 shadow-[0_0_30px_rgba(14,165,233,0.3)]">
-            <Zap className="h-10 w-10 text-primary" />
-          </div>
-          <h2 className="text-5xl md:text-7xl font-display font-black text-white mb-8 uppercase tracking-tighter glow-text">
-            SYSTEM READY. <br/>ARE YOU?
+      {/* 13. COUNTDOWN */}
+      <section className="py-24 bg-[#07111F] relative overflow-hidden">
+        <div className="absolute inset-0 bg-tech-grid opacity-10"></div>
+        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
+          <h2 className="text-3xl md:text-5xl font-display font-bold text-white tracking-tight mb-16">
+            THE COUNTDOWN<br/>HAS BEGUN.
           </h2>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12 text-gray-300 text-lg font-bold uppercase tracking-widest">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-primary" />
-              <span>08–09 OCT 2026</span>
-            </div>
-            <div className="hidden sm:block text-primary/50">•</div>
-            <div className="flex items-center gap-2">
-              <MapPin className="h-5 w-5 text-primary" />
-              <span>DRIEMS UNIVERSITY</span>
-            </div>
+          <div className="w-full max-w-2xl mx-auto">
+            <Countdown />
           </div>
-          
-          <div className="flex flex-col sm:flex-row justify-center gap-6">
-            <Link to="/events" className="inline-flex items-center justify-center rounded-xl bg-primary text-white text-lg font-black tracking-widest uppercase transition-all shadow-[0_0_30px_rgba(14,165,233,0.5)] hover:shadow-[0_0_50px_rgba(14,165,233,0.8)] hover:bg-primary/90 hover:scale-105 active:scale-95 h-16 px-12">
-              REGISTER NOW
-            </Link>
+        </div>
+      </section>
+
+      {/* 15. REGISTRATION CTA */}
+      <section className="py-32 bg-[#0B1F36] relative overflow-hidden border-t border-[#07111F]">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#087BFF] to-transparent opacity-50"></div>
+        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
+          <h2 className="text-4xl md:text-6xl font-display font-bold text-white tracking-tight mb-8">
+            READY TO ENTER<br/>THE YANTRIKA ARENA?
+          </h2>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 text-[#CBD5E1] text-sm tracking-widest uppercase mb-12">
+            <span>08–09 OCTOBER 2026</span>
+            <span className="hidden md:block w-1 h-1 rounded-full bg-[#087BFF]"></span>
+            <span>DRIEMS UNIVERSITY</span>
           </div>
+          <Link to="/events" className="inline-flex items-center justify-center rounded-[10px] text-sm font-semibold transition-all bg-[#087BFF] text-white hover:bg-[#0667D9] hover:-translate-y-[2px] hover:shadow-[0_8px_25px_rgba(8,123,255,0.20)] h-[52px] px-10">
+            REGISTER NOW
+          </Link>
         </div>
       </section>
     </div>

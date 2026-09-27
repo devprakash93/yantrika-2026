@@ -34,31 +34,38 @@ export default function Countdown() {
   return (
     <div className="flex justify-center gap-4 text-center mt-12 mb-8">
       <div className="flex flex-col items-center">
-        <div className="text-3xl md:text-5xl font-display font-bold bg-card border text-card-foreground w-16 h-16 md:w-24 md:h-24 flex items-center justify-center rounded-lg shadow-sm">
+        <div className="text-3xl md:text-5xl font-display font-bold bg-[#0B1F36] border border-white/12 text-white w-20 h-20 md:w-28 md:h-28 flex items-center justify-center rounded-[12px] shadow-sm relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-[#087BFF]"></div>
           {timeLeft.days.toString().padStart(2, '0')}
         </div>
-        <span className="text-xs md:text-sm text-muted-foreground mt-2 font-medium uppercase tracking-wider">Days</span>
+        <span className="text-xs md:text-sm text-[#087BFF] mt-3 font-semibold uppercase tracking-widest">Days</span>
       </div>
-      <div className="text-3xl md:text-5xl font-bold text-muted-foreground py-2 md:py-4">:</div>
+      <div className="text-3xl md:text-5xl font-bold text-white/30 py-4 md:py-6">:</div>
+      
       <div className="flex flex-col items-center">
-        <div className="text-3xl md:text-5xl font-display font-bold bg-card border text-card-foreground w-16 h-16 md:w-24 md:h-24 flex items-center justify-center rounded-lg shadow-sm">
+        <div className="text-3xl md:text-5xl font-display font-bold bg-[#0B1F36] border border-white/12 text-white w-20 h-20 md:w-28 md:h-28 flex items-center justify-center rounded-[12px] shadow-sm relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-[#087BFF]"></div>
           {timeLeft.hours.toString().padStart(2, '0')}
         </div>
-        <span className="text-xs md:text-sm text-muted-foreground mt-2 font-medium uppercase tracking-wider">Hours</span>
+        <span className="text-xs md:text-sm text-[#087BFF] mt-3 font-semibold uppercase tracking-widest">Hours</span>
       </div>
-      <div className="text-3xl md:text-5xl font-bold text-muted-foreground py-2 md:py-4">:</div>
+      <div className="text-3xl md:text-5xl font-bold text-white/30 py-4 md:py-6">:</div>
+      
       <div className="flex flex-col items-center">
-        <div className="text-3xl md:text-5xl font-display font-bold bg-card border text-card-foreground w-16 h-16 md:w-24 md:h-24 flex items-center justify-center rounded-lg shadow-sm">
+        <div className="text-3xl md:text-5xl font-display font-bold bg-[#0B1F36] border border-white/12 text-white w-20 h-20 md:w-28 md:h-28 flex items-center justify-center rounded-[12px] shadow-sm relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-[#087BFF]"></div>
           {timeLeft.minutes.toString().padStart(2, '0')}
         </div>
-        <span className="text-xs md:text-sm text-muted-foreground mt-2 font-medium uppercase tracking-wider">Mins</span>
+        <span className="text-xs md:text-sm text-[#087BFF] mt-3 font-semibold uppercase tracking-widest">Mins</span>
       </div>
-      <div className="text-3xl md:text-5xl font-bold text-muted-foreground py-2 md:py-4">:</div>
+      <div className="text-3xl md:text-5xl font-bold text-white/30 py-4 md:py-6">:</div>
+      
       <div className="flex flex-col items-center">
-        <div className="text-3xl md:text-5xl font-display font-bold bg-card border text-card-foreground w-16 h-16 md:w-24 md:h-24 flex items-center justify-center rounded-lg shadow-sm">
+        <div className="text-3xl md:text-5xl font-display font-bold bg-[#0B1F36] border border-white/12 text-white w-20 h-20 md:w-28 md:h-28 flex items-center justify-center rounded-[12px] shadow-sm relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-[#087BFF]"></div>
           {timeLeft.seconds.toString().padStart(2, '0')}
         </div>
-        <span className="text-xs md:text-sm text-muted-foreground mt-2 font-medium uppercase tracking-wider">Secs</span>
+        <span className="text-xs md:text-sm text-[#087BFF] mt-3 font-semibold uppercase tracking-widest">Secs</span>
       </div>
     </div>
   );
