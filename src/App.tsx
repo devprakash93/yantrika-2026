@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import MobileNav from './components/MobileNav';
+import CustomCursor from './components/CustomCursor';
 import Home from './pages/Home';
 import Events from './pages/Events';
 import EventDetails from './pages/EventDetails';
@@ -15,24 +15,23 @@ import Search from './pages/Search';
 function App() {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen bg-white">
+      <CustomCursor />
+      <div className="flex flex-col min-h-screen bg-paper">
         <Navbar />
-        {/* Added pb-20 md:pb-0 to prevent content from hiding under mobile nav */}
-        <main className="flex-grow pt-[72px] pb-[80px] md:pb-0">
+        <main className="flex-grow">
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/events" element={<Events />} />
+            <Route path="/"           element={<Home />} />
+            <Route path="/events"     element={<Events />} />
             <Route path="/events/:id" element={<EventDetails />} />
-            <Route path="/schedule" element={<Schedule />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/gallery" element={<Gallery />} />
-            <Route path="/faq" element={<FAQ />} />
-            <Route path="/contact" element={<Contact />} />
+            <Route path="/schedule"   element={<Schedule />} />
+            <Route path="/about"      element={<About />} />
+            <Route path="/gallery"    element={<Gallery />} />
+            <Route path="/faq"        element={<FAQ />} />
+            <Route path="/contact"    element={<Contact />} />
+            <Route path="/search"     element={<Search />} />
           </Routes>
         </main>
         <Footer />
-        <MobileNav />
       </div>
     </Router>
   );

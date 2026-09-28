@@ -1,221 +1,366 @@
+import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ArrowRight, Code, Palette, Gamepad2 } from 'lucide-react';
-import { events } from '../data';
-import Countdown from '../components/Countdown';
+import { motion, useMotionValue, useTransform } from 'framer-motion';
+
+// Small reusable label in mono
+const Label = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
+  <span className={`font-mono text-[10px] md:text-[11px] tracking-[0.18em] uppercase text-muted ${className}`}>
+    {children}
+  </span>
+);
+
+// Corner technical marker
+const CornerMark = ({ position }: { position: 'tl' | 'tr' | 'bl' | 'br' }) => {
+  const cls: Record<string, string> = {
+    tl: 'top-6 left-6 border-t border-l',
+    tr: 'top-6 right-6 border-t border-r',
+    bl: 'bottom-6 left-6 border-b border-l',
+    br: 'bottom-6 right-6 border-b border-r',
+  };
+  return (
+    <div className={`absolute ${cls[position]} border-muted/30 w-6 h-6 hidden md:block`} />
+  );
+};
 
 export default function Home() {
+  const heroRef = useRef<HTMLDivElement>(null);
+  const mouseX  = useMotionValue(0);
+  const mouseY  = useMotionValue(0);
+  const [coords, setCoords] = useState({ x: '000.00', y: '000.00' });
+
+  const gridX = useTransform(mouseX, [-1, 1], [-6, 6]);
+  const gridY = useTransform(mouseY, [-1, 1], [-6, 6]);
+  const typoX = useTransform(mouseX, [-1, 1], [-4, 4]);
+  const typoY = useTransform(mouseY, [-1, 1], [-3, 3]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!heroRef.current) return;
+    const rect   = heroRef.current.getBoundingClientRect();
+    const normX  = ((e.clientX - rect.left) / rect.width  - 0.5) * 2;
+    const normY  = ((e.clientY - rect.top)  / rect.height - 0.5) * 2;
+    mouseX.set(normX);
+    mouseY.set(normY);
+    setCoords({
+      x: (normX * 90 + 20.24).toFixed(2),
+      y: (normY * 40 + 85.82).toFixed(2),
+    });
+  };
+
+  const observe = (el: Element | null, _id: string) => {
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { void entry; },
+      { threshold: 0.15 }
+    );
+    obs.observe(el);
+  };
+
   return (
-    <div className="flex flex-col min-h-screen font-sans bg-white text-[#0B1220]">
-      
-      {/* 4. HERO SECTION */}
-      <section className="relative min-h-[90vh] bg-[#07111F] flex items-center justify-center pt-24 pb-16 overflow-hidden">
-        {/* Subtle technical background details */}
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-tech-grid opacity-5"></div>
-          {/* Subtle gradient accent for the hero */}
-          <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#087BFF]/10 via-transparent to-transparent"></div>
+    <div className="bg-paper text-ink font-sans">
+
+      {/* ── 01. HERO ─────────────────────────────────────────── */}
+      <section
+        ref={heroRef}
+        onMouseMove={handleMouseMove}
+        className="relative min-h-screen flex flex-col overflow-hidden pt-16"
+        aria-label="Hero"
+      >
+        {/* Engineering grid — reacts to mouse */}
+        <motion.div
+          className="absolute inset-0 eng-grid pointer-events-none"
+          style={{ x: gridX, y: gridY }}
+        />
+
+        {/* Corner marks */}
+        <CornerMark position="tl" />
+        <CornerMark position="tr" />
+        <CornerMark position="bl" />
+        <CornerMark position="br" />
+
+        {/* Coordinates display (top-right) */}
+        <div className="absolute top-20 right-8 hidden md:flex flex-col items-end gap-1">
+          <Label>X — {coords.x}°N</Label>
+          <Label>Y — {coords.y}°E</Label>
         </div>
 
-        <div className="relative z-10 text-center px-4 w-full max-w-7xl mx-auto flex flex-col items-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="flex flex-col items-center w-full"
-          >
-            <div className="text-[11px] md:text-xs font-bold tracking-[0.2em] text-[#CBD5E1] uppercase mb-12 border border-[#CBD5E1]/20 rounded-full px-5 py-2 inline-block">
-              DRIEMS UNIVERSITY TECHNICAL FEST 2026
-            </div>
-            
-            <h1 className="mb-10 w-full flex justify-center">
-              <span className="sr-only">YANTRIKA 2026</span>
-              <img src="/logo.png" alt="YANTRIKA 2026 Logo" className="w-full max-w-3xl h-auto drop-shadow-xl" />
+        {/* Node status (bottom-left) */}
+        <div className="absolute bottom-10 left-8 hidden md:flex items-center gap-3">
+          <div className="w-1.5 h-1.5 rounded-full bg-orange animate-pulse" />
+          <Label>NODE — 01 / SYSTEM ACTIVE</Label>
+        </div>
+
+        {/* Scroll indicator (bottom-right) */}
+        <div className="absolute bottom-10 right-8 flex flex-col items-end gap-1">
+          <Label>SCROLL ↓</Label>
+        </div>
+
+        {/* Top labels row */}
+        <div className="flex justify-between items-center px-6 md:px-12 pt-8 pb-0">
+          <Label>DRIEMS UNIVERSITY · CSE, SOE&T</Label>
+          <Label className="hidden sm:block">08—09 OCT 2026</Label>
+        </div>
+
+        {/* ── Main typography ── */}
+        <div className="flex-1 flex items-center px-6 md:px-12 py-12">
+          <motion.div style={{ x: typoX, y: typoY }} className="w-full">
+            {/* YANTRIKA */}
+            <h1
+              className="font-display text-ink leading-none tracking-tight select-none"
+              style={{ fontSize: 'clamp(56px, 13vw, 210px)', lineHeight: 0.88 }}
+            >
+              YANTRIKA
             </h1>
-            
-            <p className="text-sm md:text-base text-[#CBD5E1] font-medium mb-12 tracking-[0.2em] uppercase max-w-2xl mx-auto">
-              WHERE TECHNOLOGY MEETS CREATIVITY
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-8 md:gap-16 mb-16 text-sm font-semibold tracking-widest text-white uppercase">
-              <div className="flex flex-col items-center gap-2">
-                <span className="text-[#64748B] text-xs">Date</span>
-                <span>08 — 09 OCTOBER 2026</span>
-              </div>
-              <div className="hidden sm:block w-px h-8 bg-[#CBD5E1]/20"></div>
-              <div className="flex flex-col items-center gap-2">
-                <span className="text-[#64748B] text-xs">Location</span>
-                <span>DRIEMS UNIVERSITY</span>
-              </div>
+            {/* 2026 — offset right + orange accent */}
+            <div className="flex">
+              <span
+                className="font-display leading-none tracking-tight select-none ml-[8%] md:ml-[12%]"
+                style={{
+                  fontSize: 'clamp(56px, 13vw, 210px)',
+                  lineHeight: 0.88,
+                  color: '#FF4D00',
+                }}
+              >
+                2026
+              </span>
             </div>
 
-            <div className="flex flex-col sm:flex-row justify-center gap-5 mb-16">
-              <Link to="/events" className="inline-flex items-center justify-center rounded-[10px] text-sm font-semibold transition-all bg-[#087BFF] text-white hover:bg-[#0667D9] hover:-translate-y-[2px] hover:shadow-[0_8px_25px_rgba(8,123,255,0.20)] h-[52px] px-8">
-                EXPLORE EVENTS
-              </Link>
-              <Link to="/events" className="inline-flex items-center justify-center rounded-[10px] text-sm font-semibold transition-all border border-[#CBD5E1]/30 bg-transparent text-white hover:border-[#087BFF] hover:text-[#087BFF] h-[52px] px-8">
-                REGISTER NOW
-              </Link>
-            </div>
-
-            {/* Countdown — inside hero */}
-            <div className="w-full border-t border-[#CBD5E1]/10 pt-12">
-              <p className="text-[11px] font-bold tracking-[0.25em] text-[#64748B] uppercase mb-2">The Countdown Has Begun</p>
-              <Countdown />
+            {/* Annotation bar */}
+            <div className="mt-10 md:mt-14 flex flex-wrap items-center gap-6 md:gap-10">
+              <div className="flex items-center gap-4">
+                <div className="h-px w-10 bg-muted/40" />
+                <Label>08.10.26 — 09.10.26</Label>
+                <div className="h-px w-10 bg-muted/40" />
+              </div>
+              <div className="hidden md:flex items-center gap-3">
+                <div className="w-1 h-1 bg-orange rounded-full" />
+                <Label>TECHNICAL FEST</Label>
+                <div className="w-1 h-1 bg-orange rounded-full" />
+                <Label>CULTURAL FEST</Label>
+              </div>
             </div>
           </motion.div>
         </div>
+
+        {/* CTA row */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 px-6 md:px-12 pb-14">
+          <Link
+            to="/events"
+            data-cursor-view
+            className="bg-ink text-paper font-mono text-[11px] tracking-[0.18em] px-8 py-4 hover:bg-orange transition-colors"
+          >
+            ENTER EVENT INDEX →
+          </Link>
+          <Link
+            to="/schedule"
+            className="font-mono text-[11px] tracking-[0.18em] text-muted hover:text-ink transition-colors underline underline-offset-4"
+          >
+            VIEW SCHEDULE
+          </Link>
+        </div>
       </section>
 
-      {/* 10. ABOUT SECTION */}
-      <section className="py-32 bg-white relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-4xl md:text-6xl font-display font-bold text-[#0B1220] mb-8 leading-[1.1] tracking-tight">
-                MORE THAN A FEST.<br/>
-                A PLATFORM TO CREATE.
-              </h2>
-              <p className="text-lg text-[#64748B] mb-12 leading-relaxed max-w-lg">
-                YANTRIKA 2026 brings together thousands of students through intense technical challenges, breathtaking creative competitions, and competitive gaming across a sprawling university campus.
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-x-8 gap-y-12">
-              {[
-                { number: "2", label: "DAYS" },
-                { number: "30+", label: "EVENTS" },
-                { number: "∞", label: "IDEAS" },
-                { number: "1", label: "CAMPUS" }
-              ].map((stat, i) => (
-                <div key={i} className="flex flex-col">
-                  <span className="text-5xl md:text-7xl font-display font-bold text-[#087BFF] mb-2">{stat.number}</span>
-                  <span className="text-sm font-semibold tracking-widest text-[#64748B] uppercase">{stat.label}</span>
-                </div>
+      {/* ── 02. TICKER ───────────────────────────────────────── */}
+      <div className="border-y border-rule py-3 overflow-hidden bg-paper" aria-hidden>
+        <div className="ticker-track flex gap-10 whitespace-nowrap w-max">
+          {[...Array(2)].map((_, r) => (
+            <span key={r} className="flex gap-10">
+              {['YANTRIKA 2026', '08–09 OCT', 'DRIEMS UNIVERSITY', 'CSE DEPT', 'REGISTER NOW', 'EVENT INDEX', 'YANTRIKA 2026', '08–09 OCT', 'DRIEMS UNIVERSITY', 'CSE DEPT'].map((t, i) => (
+                <span key={i} className="font-mono text-[11px] tracking-[0.18em] text-muted inline-flex items-center gap-10">
+                  {t} <span className="text-orange">·</span>
+                </span>
               ))}
-            </div>
-          </div>
+            </span>
+          ))}
         </div>
-      </section>
+      </div>
 
-      {/* 11. EVENT CATEGORY SECTION */}
-      <section className="py-32 bg-[#F5F8FC] relative border-y border-[#E2E8F0]">
-        <div className="absolute inset-0 bg-tech-grid-dark opacity-[0.02]"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="mb-16">
-            <h2 className="text-4xl md:text-5xl font-display font-bold text-[#0B1220] tracking-tight">CHOOSE YOUR ARENA</h2>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Link to="/events?category=Technical" className="group bg-white rounded-[16px] p-10 border border-[#E2E8F0] hover:border-[#087BFF] transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity">
-                <Code className="w-40 h-40" />
-              </div>
-              <div className="h-12 w-12 rounded-full bg-[#087BFF]/10 text-[#087BFF] flex items-center justify-center mb-8">
-                <Code className="h-5 w-5" />
-              </div>
-              <h3 className="text-2xl font-display font-bold text-[#0B1220] mb-4">TECHNICAL</h3>
-              <p className="text-[#64748B] font-medium">Build. Solve. Innovate.</p>
-            </Link>
+      {/* ── 03. EVENT INDEX PREVIEW ───────────────────────────── */}
+      <EventPreview setObserve={observe} />
 
-            <Link to="/events?category=Cultural" className="group bg-white rounded-[16px] p-10 border border-[#E2E8F0] hover:border-[#087BFF] transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity">
-                <Palette className="w-40 h-40" />
-              </div>
-              <div className="h-12 w-12 rounded-full bg-[#7C3AED]/10 text-[#7C3AED] flex items-center justify-center mb-8">
-                <Palette className="h-5 w-5" />
-              </div>
-              <h3 className="text-2xl font-display font-bold text-[#0B1220] mb-4">CULTURAL</h3>
-              <p className="text-[#64748B] font-medium">Perform. Create. Express.</p>
-            </Link>
+      {/* ── 04. ABOUT ─────────────────────────────────────────── */}
+      <AboutSection />
 
-            <Link to="/events?category=Gaming" className="group bg-white rounded-[16px] p-10 border border-[#E2E8F0] hover:border-[#087BFF] transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity">
-                <Gamepad2 className="w-40 h-40" />
-              </div>
-              <div className="h-12 w-12 rounded-full bg-[#111827]/5 text-[#111827] flex items-center justify-center mb-8">
-                <Gamepad2 className="h-5 w-5" />
-              </div>
-              <h3 className="text-2xl font-display font-bold text-[#0B1220] mb-4">GAMING</h3>
-              <p className="text-[#64748B] font-medium">Compete. Strategize. Win.</p>
-            </Link>
-          </div>
+      {/* ── 05. REGISTER CTA ──────────────────────────────────── */}
+      <RegisterCTA />
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────── */
+/*  EVENT PREVIEW                                          */
+/* ─────────────────────────────────────────────────────── */
+import { events } from '../data';
+
+const CATEGORY_COLOR: Record<string, string> = {
+  'Robotics & Hardware':  '#0057FF',
+  'Coding & Development': '#0057FF',
+  'Design & Innovation':  '#0057FF',
+  'Academic & Knowledge': '#0057FF',
+  'Cultural':             '#FF4D00',
+  'Cultural / Creative':  '#FF4D00',
+  'Gaming':               '#F5E142',
+};
+
+function EventPreview({ setObserve }: { setObserve: (_: Element|null, id: string) => void }) {
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const preview = events.slice(0, 6);
+
+  return (
+    <section
+      ref={el => setObserve(el, 'events')}
+      className="max-w-screen-xl mx-auto px-6 md:px-10 py-24 md:py-32"
+    >
+      {/* Section header */}
+      <div className="flex items-end justify-between mb-12 border-b border-rule pb-6">
+        <div>
+          <Label className="block mb-3">02 — EVENT INDEX</Label>
+          <h2 className="font-display text-4xl md:text-5xl text-ink leading-none">CHOOSE YOUR ARENA</h2>
         </div>
-      </section>
+        <Link to="/events" data-cursor-view className="font-mono text-[11px] tracking-widest text-muted hover:text-ink transition-colors hidden md:block">
+          VIEW ALL 10 →
+        </Link>
+      </div>
 
-      {/* 12. FEATURED EVENTS */}
-      <section className="py-32 bg-white relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-            <h2 className="text-4xl md:text-5xl font-display font-bold text-[#0B1220] leading-[1.1] tracking-tight">
-              EVENTS THAT<br/>DEFINE YANTRIKA
-            </h2>
-            <Link to="/events" className="inline-flex items-center text-[#087BFF] font-semibold hover:text-[#0667D9] transition-colors">
-              VIEW ALL EVENTS <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </div>
+      {/* Event rows */}
+      <div className="divide-y divide-rule">
+        {preview.map((event, i) => {
+          const isHovered = hoveredId === event.id;
+          const accent = CATEGORY_COLOR[event.category] ?? '#0F0F0D';
+          return (
+            <div
+              key={event.id}
+              onMouseEnter={() => setHoveredId(event.id)}
+              onMouseLeave={() => setHoveredId(null)}
+              className={`transition-colors duration-200 ${isHovered ? 'bg-surface' : ''}`}
+            >
+              <div className="flex items-center gap-4 md:gap-8 py-5 md:py-6">
+                {/* Number */}
+                <motion.span
+                  animate={{ scale: isHovered ? 1.15 : 1, color: isHovered ? '#FF4D00' : '#8C8C83' }}
+                  className="font-mono text-[11px] w-8 flex-shrink-0"
+                >
+                  {String(i + 1).padStart(2, '0')}
+                </motion.span>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {events.slice(0, 3).map((event) => (
-              <div key={event.id} className="group bg-white rounded-[16px] border border-[#E2E8F0] hover:border-[#087BFF] transition-all duration-300 hover:-translate-y-1 flex flex-col overflow-hidden">
-                <div className="p-8 flex-grow">
-                  <div className="mb-6">
-                    <span className={`text-[10px] font-bold tracking-widest uppercase ${
-                      event.category === 'Technical' || event.category === 'Robotics & Hardware' ? 'text-[#087BFF]' : 
-                      event.category === 'Cultural' ? 'text-[#7C3AED]' : 'text-[#111827]'
-                    }`}>
-                      {event.category}
-                    </span>
-                  </div>
-                  
-                  <h3 className="text-2xl font-display font-bold text-[#0B1220] mb-3 line-clamp-1">{event.name}</h3>
-                  <p className="text-[#64748B] text-sm line-clamp-2 mb-8 leading-relaxed">{event.description}</p>
-                  
-                  <div className="space-y-3 mb-8">
-                    <div className="flex justify-between text-sm border-b border-[#E2E8F0] pb-2">
-                      <span className="text-[#64748B]">Date</span>
-                      <span className="font-semibold text-[#0B1220]">{event.date}</span>
-                    </div>
-                    <div className="flex justify-between text-sm border-b border-[#E2E8F0] pb-2">
-                      <span className="text-[#64748B]">Team</span>
-                      <span className="font-semibold text-[#0B1220]">{event.participants}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-[#64748B]">Fee</span>
-                      <span className="font-semibold text-[#0B1220]">{event.fee}</span>
-                    </div>
-                  </div>
+                {/* Name + type */}
+                <div className="flex-1 min-w-0">
+                  <p
+                    className="font-display leading-none truncate transition-colors"
+                    style={{ fontSize: 'clamp(18px, 2.8vw, 32px)', color: isHovered ? accent : '#0F0F0D' }}
+                  >
+                    {event.name}
+                  </p>
+                  <p className="font-mono text-[10px] text-muted tracking-widest uppercase mt-1 truncate">
+                    {event.type}
+                  </p>
                 </div>
-                
-                <div className="px-8 pb-8 flex flex-col gap-3">
-                  <Link to={`/events/${event.id}`} className="w-full inline-flex items-center justify-center rounded-[10px] text-sm font-semibold border border-[#CBD5E1] bg-transparent text-[#0B1220] hover:border-[#087BFF] hover:text-[#087BFF] h-11 transition-colors">
-                    VIEW DETAILS
+
+                {/* Fee */}
+                <span className="font-mono text-[11px] text-muted hidden sm:block flex-shrink-0">{event.fee}</span>
+
+                {/* CTA */}
+                <Link
+                  to={`/events/${event.id}`}
+                  data-cursor-view
+                  className="font-mono text-[10px] tracking-widest text-muted hover:text-ink transition-colors flex-shrink-0 hidden md:block"
+                >
+                  VIEW →
+                </Link>
+              </div>
+
+              {/* Hover expansion */}
+              <motion.div
+                initial={false}
+                animate={{ height: isHovered ? 'auto' : 0, opacity: isHovered ? 1 : 0 }}
+                transition={{ duration: 0.22 }}
+                className="overflow-hidden"
+              >
+                <div className="pl-12 pb-6 pr-4 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                  <p className="text-sm text-mid leading-relaxed max-w-2xl">{event.description}</p>
+                  <Link
+                    to={`/events/${event.id}`}
+                    data-cursor-register
+                    className="bg-ink text-paper font-mono text-[10px] tracking-widest px-6 py-3 hover:bg-orange transition-colors flex-shrink-0 inline-block"
+                  >
+                    REGISTER →
                   </Link>
                 </div>
+              </motion.div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* View all link */}
+      <div className="mt-8 text-center md:hidden">
+        <Link to="/events" className="font-mono text-[11px] tracking-widest text-muted hover:text-ink transition-colors underline underline-offset-4">
+          VIEW ALL 10 EVENTS →
+        </Link>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────────────────────────────────── */
+/*  ABOUT SECTION                                          */
+/* ─────────────────────────────────────────────────────── */
+function AboutSection() {
+  return (
+    <section className="border-t border-rule bg-ink text-paper py-24 md:py-32 px-6 md:px-10">
+      <div className="max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-start">
+        <div>
+          <Label className="text-white/30 block mb-4">03 — ABOUT YANTRIKA</Label>
+          <h2
+            className="font-display text-paper leading-none"
+            style={{ fontSize: 'clamp(40px, 6vw, 90px)' }}
+          >
+            MORE THAN<br />A FESTIVAL.
+          </h2>
+        </div>
+        <div className="flex flex-col gap-8">
+          <p className="text-paper/70 text-lg leading-relaxed">
+            YANTRIKA 2026 is the annual technical and cultural festival of the Department of Computer Science and Engineering, School of Engineering & Technology, DRIEMS University. It brings together students across disciplines for two days of intense competition, creative performance, and engineering excellence.
+          </p>
+          <div className="grid grid-cols-3 gap-6 pt-4 border-t border-white/10">
+            {[['2', 'DAYS'], ['10+', 'EVENTS'], ['1', 'CAMPUS']].map(([num, lbl]) => (
+              <div key={lbl}>
+                <p className="font-display text-4xl md:text-5xl text-orange">{num}</p>
+                <Label className="text-white/30 mt-1 block">{lbl}</Label>
               </div>
             ))}
           </div>
         </div>
-      </section>
+      </div>
+    </section>
+  );
+}
 
-
-      {/* 15. REGISTRATION CTA */}
-      <section className="py-32 bg-[#0B1F36] relative overflow-hidden border-t border-[#07111F]">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#087BFF] to-transparent opacity-50"></div>
-        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
-          <h2 className="text-4xl md:text-6xl font-display font-bold text-white tracking-tight mb-8">
-            READY TO ENTER<br/>THE YANTRIKA ARENA?
+/* ─────────────────────────────────────────────────────── */
+/*  REGISTER CTA                                           */
+/* ─────────────────────────────────────────────────────── */
+function RegisterCTA() {
+  return (
+    <section className="bg-orange py-20 md:py-28 px-6 md:px-10">
+      <div className="max-w-screen-xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+        <div>
+          <Label className="text-ink/50 block mb-3">04 — REGISTER</Label>
+          <h2 className="font-display text-ink leading-none" style={{ fontSize: 'clamp(36px, 6vw, 88px)' }}>
+            READY TO<br />COMPETE?
           </h2>
-          <div className="flex flex-col md:flex-row items-center justify-center gap-4 text-[#CBD5E1] text-sm tracking-widest uppercase mb-12">
-            <span>08–09 OCTOBER 2026</span>
-            <span className="hidden md:block w-1 h-1 rounded-full bg-[#087BFF]"></span>
-            <span>DRIEMS UNIVERSITY</span>
-          </div>
-          <Link to="/events" className="inline-flex items-center justify-center rounded-[10px] text-sm font-semibold transition-all bg-[#087BFF] text-white hover:bg-[#0667D9] hover:-translate-y-[2px] hover:shadow-[0_8px_25px_rgba(8,123,255,0.20)] h-[52px] px-10">
-            REGISTER NOW
-          </Link>
         </div>
-      </section>
-    </div>
+        <div className="flex flex-col gap-4">
+          <Link
+            to="/events"
+            data-cursor-register
+            className="bg-ink text-paper font-mono text-[11px] tracking-widest px-10 py-5 hover:opacity-80 transition-opacity inline-block"
+          >
+            VIEW EVENT INDEX →
+          </Link>
+          <p className="font-mono text-[10px] text-ink/50 tracking-widest">
+            08—09 OCTOBER 2026 · DRIEMS UNIVERSITY
+          </p>
+        </div>
+      </div>
+    </section>
   );
 }

@@ -1,70 +1,76 @@
 import { Link } from 'react-router-dom';
-import { ExternalLink } from 'lucide-react';
+
+const Label = ({ children }: { children: React.ReactNode }) => (
+  <span className="font-mono text-[10px] md:text-[11px] tracking-[0.18em] uppercase text-muted">{children}</span>
+);
+
+const LINKS = [
+  { label: 'Events',     path: '/events' },
+  { label: 'Schedule',   path: '/schedule' },
+  { label: 'About',      path: '/about' },
+  { label: 'Contact',    path: '/contact' },
+  { label: 'Register',   path: '/events' },
+];
 
 export default function Footer() {
   return (
-    <footer className="bg-[#07111F] pt-20 pb-10 border-t border-[#0B1F36]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
-          
-          {/* Brand */}
-          <div className="col-span-1 md:col-span-4">
-            <Link to="/" className="flex items-center mb-6">
-              {/* Note: The logo might need a white version if the current one is dark, but the user provided a metallic one which should look fine on dark. */}
-              <img src="/logo.png" alt="YANTRIKA 2026 Logo" className="h-10 w-auto opacity-90" />
-            </Link>
-            <p className="text-[#CBD5E1]/70 text-sm mb-8 leading-relaxed pr-4 font-medium">
-              Organized by the Department of Computer Science and Engineering, School of Engineering & Technology, DRIEMS University.
+    <footer className="bg-ink text-paper border-t border-white/10">
+      {/* Large wordmark */}
+      <div className="max-w-screen-xl mx-auto px-6 md:px-10 pt-16 pb-8 border-b border-white/10">
+        <p
+          className="font-display text-paper/10 leading-none select-none"
+          style={{ fontSize: 'clamp(64px, 12vw, 180px)', lineHeight: 0.85 }}
+        >
+          YANTRIKA<br />
+          <span className="text-orange/20">2026</span>
+        </p>
+      </div>
+
+      {/* Footer body */}
+      <div className="max-w-screen-xl mx-auto px-6 md:px-10 py-10 grid grid-cols-1 md:grid-cols-3 gap-10">
+
+        {/* Institution */}
+        <div className="space-y-3">
+          <Label>Organised By</Label>
+          <div className="mt-3 space-y-1">
+            <p className="font-grotesk text-sm font-semibold text-paper">DRIEMS UNIVERSITY</p>
+            <p className="font-grotesk text-xs text-paper/50 leading-relaxed">
+              Department of Computer Science and Engineering<br />
+              School of Engineering & Technology
             </p>
           </div>
-
-          {/* Quick Links */}
-          <div className="col-span-1 md:col-span-2 md:col-start-6">
-            <h3 className="font-display font-bold text-white uppercase tracking-widest text-sm mb-6">
-              EXPLORE
-            </h3>
-            <ul className="space-y-4 text-sm font-medium text-[#CBD5E1]">
-              <li><Link to="/" className="hover:text-[#00C8FF] transition-colors">Home</Link></li>
-              <li><Link to="/about" className="hover:text-[#00C8FF] transition-colors">About</Link></li>
-              <li><Link to="/schedule" className="hover:text-[#00C8FF] transition-colors">Schedule</Link></li>
-              <li><Link to="/gallery" className="hover:text-[#00C8FF] transition-colors">Gallery</Link></li>
-              <li><Link to="/faq" className="hover:text-[#00C8FF] transition-colors">FAQ</Link></li>
-            </ul>
-          </div>
-
-          {/* Categories */}
-          <div className="col-span-1 md:col-span-2">
-            <h3 className="font-display font-bold text-white uppercase tracking-widest text-sm mb-6">
-              EVENTS
-            </h3>
-            <ul className="space-y-4 text-sm font-medium text-[#CBD5E1]">
-              <li><Link to="/events?category=Technical" className="hover:text-[#00C8FF] transition-colors">Technical</Link></li>
-              <li><Link to="/events?category=Cultural" className="hover:text-[#00C8FF] transition-colors">Cultural</Link></li>
-              <li><Link to="/events?category=Gaming" className="hover:text-[#00C8FF] transition-colors">Gaming</Link></li>
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div className="col-span-1 md:col-span-3">
-            <h3 className="font-display font-bold text-white uppercase tracking-widest text-sm mb-6">
-              CONNECT
-            </h3>
-            <ul className="space-y-4 text-sm font-medium text-[#CBD5E1] mb-6">
-              <li><a href="#" className="hover:text-[#00C8FF] transition-colors flex items-center"><ExternalLink className="w-4 h-4 mr-3" /> Instagram</a></li>
-              <li><a href="#" className="hover:text-[#00C8FF] transition-colors flex items-center"><ExternalLink className="w-4 h-4 mr-3" /> LinkedIn</a></li>
-              <li><a href="#" className="hover:text-[#00C8FF] transition-colors flex items-center"><ExternalLink className="w-4 h-4 mr-3" /> YouTube</a></li>
-              <li><Link to="/contact" className="hover:text-[#00C8FF] transition-colors block pt-2">Contact Us &rarr;</Link></li>
-            </ul>
-          </div>
         </div>
 
-        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-sm font-medium text-[#CBD5E1]/50 text-center md:text-left">
-            &copy; 2026 YANTRIKA<br className="md:hidden" />
-            <span className="hidden md:inline mx-2">|</span>
-            DRIEMS UNIVERSITY
-          </p>
+        {/* Links */}
+        <div className="space-y-3">
+          <Label>Navigation</Label>
+          <ul className="mt-3 space-y-2.5">
+            {LINKS.map(link => (
+              <li key={link.path + link.label}>
+                <Link to={link.path} className="font-grotesk text-sm text-paper/50 hover:text-paper transition-colors">
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
+
+        {/* Info */}
+        <div className="space-y-3">
+          <Label>Festival</Label>
+          <div className="mt-3 space-y-2.5">
+            <p className="font-mono text-xs text-paper/40 tracking-widest">DATE</p>
+            <p className="font-grotesk text-sm text-paper/70">08 — 09 October 2026</p>
+            <p className="font-mono text-xs text-paper/40 tracking-widest mt-4">CONTACT</p>
+            <p className="font-grotesk text-sm text-paper/70">yantrika@driems.ac.in</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom bar */}
+      <div className="max-w-screen-xl mx-auto px-6 md:px-10 py-5 border-t border-white/10 flex flex-col md:flex-row justify-between gap-3">
+        <Label>© 2026 YANTRIKA — DRIEMS UNIVERSITY · ALL RIGHTS RESERVED</Label>
+        <Label>CSE DEPT · SOE&T</Label>
       </div>
     </footer>
   );

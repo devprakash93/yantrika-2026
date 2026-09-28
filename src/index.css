@@ -1,74 +1,67 @@
 @import "tailwindcss";
-
-@theme {
-  --color-primary-navy: #07111F;
-  --color-deep-blue: #0B1F36;
-  --color-electric-blue: #087BFF;
-  --color-electric-blue-hover: #0667D9;
-  --color-cyan-blue: #00C8FF;
-  --color-off-white: #F5F8FC;
-  --color-text-dark: #0B1220;
-  --color-text-muted: #64748B;
-  --color-border-light: #E2E8F0;
-  --color-silver: #CBD5E1;
-  
-  --font-display: 'Space Grotesk', 'Sora', sans-serif;
-  --font-sans: 'Inter', sans-serif;
-}
+@config '../tailwind.config.js';
 
 @layer base {
-  :root {
-    --background: 0 0% 100%; /* #FFFFFF */
-    --foreground: 221 48% 9%; /* #0B1220 */
+  *, *::before, *::after { box-sizing: border-box; }
 
-    --card: 0 0% 100%;
-    --card-foreground: 221 48% 9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 221 48% 9%;
-
-    --primary: 212 100% 52%; /* #087BFF */
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 213 100% 97%; /* #F5F8FC */
-    --secondary-foreground: 221 48% 9%;
-
-    --muted: 213 100% 97%;
-    --muted-foreground: 215 14% 47%; /* #64748B */
-
-    --accent: 213 100% 97%;
-    --accent-foreground: 221 48% 9%;
-
-    --border: 214 32% 91%; /* #E2E8F0 */
-    --input: 214 32% 91%;
-    --ring: 212 100% 52%;
-
-    --radius: 0.75rem;
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-}
 
-@layer base {
-  * {
-    border-color: hsl(var(--border));
-  }
   body {
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
-    font-feature-settings: "rlig" 1, "calt" 1;
+    background-color: #FAF9F7;
+    color: #0F0F0D;
+    font-family: 'Inter', sans-serif;
     overflow-x: hidden;
+    cursor: none; /* custom cursor handles this */
+  }
+
+  /* Restore cursor for touch devices */
+  @media (hover: none) {
+    body { cursor: auto; }
+  }
+
+  /* Reduce motion support */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: #FAF9F7; }
+  ::-webkit-scrollbar-thumb { background: #E0DDD6; }
+  ::-webkit-scrollbar-thumb:hover { background: #8C8C83; }
+
+  /* Focus visible styles */
+  :focus-visible {
+    outline: 2px solid #FF4D00;
+    outline-offset: 3px;
+  }
+
+  /* Selection */
+  ::selection {
+    background: #FF4D00;
+    color: #FAF9F7;
   }
 }
 
-.bg-tech-grid {
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 40px 40px;
+/* Engineering grid background utility */
+.eng-grid {
+  background-image:
+    linear-gradient(to right, rgba(15,15,13,0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15,15,13,0.04) 1px, transparent 1px);
+  background-size: 64px 64px;
 }
 
-.bg-tech-grid-dark {
-  background-image: 
-    linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
+/* Ticker / horizontal scroll utility */
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
+.ticker-track { animation: ticker 18s linear infinite; }
+.ticker-track:hover { animation-play-state: paused; }
