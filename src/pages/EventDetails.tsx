@@ -1,136 +1,160 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { events } from '../data';
-import { ArrowLeft } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { getEventTheme } from '../data/eventThemes';
+import { EventGraphic } from '../components/EventGraphics';
 
-const Label = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
-  <span className={`font-mono text-[10px] md:text-[11px] tracking-[0.18em] uppercase text-muted ${className}`}>
-    {children}
-  </span>
+const Label = ({ children, className = '', style }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) => (
+  <span className={`font-mono text-[10px] tracking-[0.18em] uppercase ${className}`} style={style}>{children}</span>
 );
 
-const ACCENT: Record<string, string> = {
-  'Robotics & Hardware':  '#0057FF',
-  'Coding & Development': '#0057FF',
-  'Design & Innovation':  '#0057FF',
-  'Academic & Knowledge': '#8C8C83',
-  'Cultural':             '#FF4D00',
-  'Cultural / Creative':  '#FF4D00',
-  'Gaming':               '#0F0F0D',
-};
-
 export default function EventDetails() {
-  const { id }  = useParams();
-  const event   = events.find(e => e.id === id);
-  const eventIdx = events.findIndex(e => e.id === id) + 1;
+  const { id }   = useParams();
+  const event    = events.find(e => e.id === id);
+  const eventIdx = events.findIndex(e => e.id === id);
   const [regOpen, setRegOpen] = useState(false);
-  const accent = event ? (ACCENT[event.category] ?? '#0F0F0D') : '#0F0F0D';
 
   if (!event) {
     return (
-      <div className="min-h-screen bg-paper flex flex-col items-center justify-center gap-4">
-        <p className="font-mono text-[11px] text-muted tracking-widest">EVENT NOT FOUND</p>
+      <div className="min-h-screen bg-paper flex flex-col items-center justify-center gap-4 pt-16">
+        <Label className="text-muted">EVENT NOT FOUND</Label>
         <Link to="/events" className="font-mono text-[11px] text-orange underline underline-offset-4">
-          ← RETURN TO INDEX
+          ← RETURN TO EVENT INDEX
         </Link>
       </div>
     );
   }
 
-  const prev = events[eventIdx - 2];
-  const next = events[eventIdx];
+  const theme  = getEventTheme(event.id);
+  const prev   = events[eventIdx - 1];
+  const next   = events[eventIdx + 1];
+  const numStr = String(eventIdx + 1).padStart(2, '0');
+  const textOnDark = '#FAF9F7';
 
   return (
     <div className="bg-paper text-ink font-sans min-h-screen">
 
-      {/* ── Hero header ──────────────────────────────────── */}
-      <div className="border-b border-rule" style={{ borderTopColor: accent, borderTopWidth: 3 }}>
-        <div className="max-w-screen-xl mx-auto px-6 md:px-10 pt-28 pb-12">
-          {/* Back nav */}
+      {/* ── Colored full-width HERO ───────────────────────── */}
+      <div
+        style={{ backgroundColor: theme.dark }}
+        className="relative overflow-hidden"
+      >
+        {/* Back nav */}
+        <div className="relative z-10 max-w-screen-xl mx-auto px-6 md:px-10 pt-24 md:pt-28 pb-0">
           <Link
             to="/events"
-            className="inline-flex items-center gap-2 font-mono text-[11px] tracking-widest text-muted hover:text-ink transition-colors mb-10"
+            className="inline-flex items-center gap-2 font-mono text-[11px] tracking-widest text-white/50 hover:text-white/80 transition-colors"
           >
             <ArrowLeft className="w-3 h-3" /> BACK TO EVENT INDEX
           </Link>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-end">
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
-              {/* Number + category */}
-              <div className="flex items-center gap-4 mb-4">
-                <span className="font-mono text-[11px] text-muted">
-                  {String(eventIdx).padStart(2, '0')} — {String(events.length).padStart(2, '0')}
-                </span>
-                <span
-                  className="font-mono text-[10px] tracking-widest px-2 py-0.5"
-                  style={{ color: accent, border: `1px solid ${accent}40` }}
-                >
-                  {event.category}
-                </span>
-              </div>
-
-              {/* Event name */}
-              <h1
-                className="font-display leading-none tracking-tight"
-                style={{ fontSize: 'clamp(44px, 8vw, 120px)', color: '#0F0F0D' }}
+        {/* Hero content grid */}
+        <div className="relative z-10 max-w-screen-xl mx-auto px-6 md:px-10 py-10 md:py-16 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 md:gap-12 items-center">
+          {/* Left: text */}
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+            {/* Number + category */}
+            <div className="flex items-center gap-4 mb-5">
+              <span className="font-mono text-[11px]" style={{ color: `${textOnDark}40` }}>
+                {numStr} — {String(events.length).padStart(2,'0')}
+              </span>
+              <span
+                className="font-mono text-[10px] tracking-widest px-2.5 py-0.5"
+                style={{ color: theme.muted, border: `1px solid ${theme.muted}40` }}
               >
-                {event.name}
-              </h1>
-              <p className="font-mono text-[11px] text-muted tracking-widest uppercase mt-3">
-                {event.type}
-              </p>
-            </motion.div>
+                {theme.categoryLabel}
+              </span>
+            </div>
 
-            {/* Quick meta card */}
-            <div className="border border-rule p-6 space-y-4 md:min-w-[220px]">
+            {/* Name */}
+            <h1
+              className="font-display leading-none tracking-tight"
+              style={{ fontSize: 'clamp(44px, 8.5vw, 120px)', color: textOnDark }}
+            >
+              {event.name}
+            </h1>
+
+            {/* Type */}
+            <p className="font-mono text-[12px] tracking-widest uppercase mt-4" style={{ color: theme.muted }}>
+              {event.type}
+            </p>
+
+            {/* Quick meta pills */}
+            <div className="flex flex-wrap gap-4 mt-8">
               {[
-                ['DATE', event.date],
-                ['TIME', event.time],
-                ['VENUE', event.venue],
+                ['ENTRY', event.fee],
                 ['TEAM', event.participants],
-                ['FEE', event.fee],
+                ['DATE', event.date],
                 ['STATUS', event.status],
               ].map(([k, v]) => (
-                <div key={k} className="flex justify-between gap-6">
-                  <Label>{k}</Label>
+                <div key={k} className="flex flex-col gap-0.5">
+                  <Label className="block" style={{ color: `${textOnDark}35` }}>{k}</Label>
                   <span
-                    className={`font-mono text-[11px] text-right ${
-                      k === 'STATUS' && v === 'Registration Open' ? 'text-green-600 font-semibold' : 'text-ink'
-                    }`}
+                    className="font-grotesk text-sm font-semibold"
+                    style={{ color: k === 'STATUS' && v === 'Registration Open' ? theme.muted : textOnDark }}
                   >
                     {v}
                   </span>
                 </div>
               ))}
             </div>
-          </div>
+          </motion.div>
+
+          {/* Right: large graphic */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 0.9, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="hidden md:block flex-shrink-0"
+          >
+            <EventGraphic
+              type={theme.graphicType}
+              color={theme.muted}
+              muted={`${textOnDark}20`}
+              size={260}
+            />
+          </motion.div>
         </div>
+
+        {/* Mobile graphic strip */}
+        <div
+          className="md:hidden flex justify-center py-6 opacity-60"
+          style={{ borderTop: `1px solid ${textOnDark}10` }}
+        >
+          <EventGraphic type={theme.graphicType} color={theme.muted} muted={`${textOnDark}20`} size={140}/>
+        </div>
+
+        {/* Bottom gradient fade to paper */}
+        <div className="h-8 w-full" style={{ background: `linear-gradient(to bottom, ${theme.dark}, #FAF9F7)` }}/>
       </div>
 
       {/* ── Content ────────────────────────────────────────── */}
-      <div className="max-w-screen-xl mx-auto px-6 md:px-10 py-16 grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
+      <div className="max-w-screen-xl mx-auto px-6 md:px-10 py-12 md:py-16 grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
 
-        {/* Main column */}
-        <div className="lg:col-span-2 space-y-14">
-
+        {/* Main content column */}
+        <div className="lg:col-span-2 space-y-12">
           {/* Description */}
           <section>
-            <Label className="block mb-4">ABOUT THIS EVENT</Label>
+            <div className="flex items-center gap-4 mb-5">
+              <Label className="text-muted">ABOUT THIS EVENT</Label>
+              <div className="flex-1 h-px bg-rule"/>
+            </div>
             <p className="text-lg text-mid leading-relaxed">{event.description}</p>
           </section>
 
           {/* Rules */}
           <section>
-            <div className="flex items-center gap-4 mb-6">
-              <Label>RULES & GUIDELINES</Label>
-              <div className="flex-1 h-px bg-rule" />
+            <div className="flex items-center gap-4 mb-5">
+              <Label className="text-muted">RULES & GUIDELINES</Label>
+              <div className="flex-1 h-px bg-rule"/>
             </div>
             <ol className="space-y-4">
               {event.rules.map((rule, i) => (
                 <li key={i} className="flex gap-4">
-                  <span className="font-mono text-[10px] text-muted flex-shrink-0 mt-1">
-                    {String(i + 1).padStart(2, '0')}
+                  <span className="font-mono text-[10px] text-muted flex-shrink-0 mt-0.5 w-5">
+                    {String(i+1).padStart(2,'0')}
                   </span>
                   <p className="text-sm text-mid leading-relaxed">{rule}</p>
                 </li>
@@ -140,14 +164,14 @@ export default function EventDetails() {
 
           {/* Judging */}
           <section>
-            <div className="flex items-center gap-4 mb-6">
-              <Label>JUDGING CRITERIA</Label>
-              <div className="flex-1 h-px bg-rule" />
+            <div className="flex items-center gap-4 mb-5">
+              <Label className="text-muted">JUDGING CRITERIA</Label>
+              <div className="flex-1 h-px bg-rule"/>
             </div>
             <ul className="space-y-3">
               {event.judgingCriteria.map((c, i) => (
-                <li key={i} className="flex gap-4">
-                  <div className="w-1 h-1 rounded-full flex-shrink-0 mt-2" style={{ background: accent }} />
+                <li key={i} className="flex gap-4 items-start">
+                  <div className="w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1.5" style={{ background: theme.primary }}/>
                   <p className="text-sm text-mid leading-relaxed">{c}</p>
                 </li>
               ))}
@@ -156,14 +180,14 @@ export default function EventDetails() {
 
           {/* Prizes */}
           <section>
-            <div className="flex items-center gap-4 mb-6">
-              <Label>PRIZES</Label>
-              <div className="flex-1 h-px bg-rule" />
+            <div className="flex items-center gap-4 mb-5">
+              <Label className="text-muted">PRIZES</Label>
+              <div className="flex-1 h-px bg-rule"/>
             </div>
             <ul className="space-y-3">
               {event.prizes.map((p, i) => (
                 <li key={i} className="flex gap-4 items-baseline">
-                  <span className="font-mono text-[10px] text-muted">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="font-mono text-[10px] text-muted w-5">{String(i+1).padStart(2,'0')}</span>
                   <p className="font-grotesk font-semibold text-sm text-ink">{p}</p>
                 </li>
               ))}
@@ -172,42 +196,64 @@ export default function EventDetails() {
         </div>
 
         {/* Sidebar */}
-        <div className="space-y-8">
+        <div className="space-y-6">
           {/* Register CTA */}
-          <div className="border border-rule p-8 space-y-5">
-            <Label className="block">REGISTER FOR THIS EVENT</Label>
-            <p className="text-sm text-mid leading-relaxed">
-              Secure your spot in {event.name} before registrations close.
-            </p>
+          <div
+            className="p-7 space-y-5"
+            style={{ borderTop: `3px solid ${theme.primary}`, background: `${theme.primary}06`, border: `1px solid ${theme.primary}20` }}
+          >
+            <Label className="text-muted block">PARTICIPATE</Label>
+            <div className="space-y-2">
+              <p className="font-display text-2xl text-ink">{event.name}</p>
+              <p className="font-mono text-[10px] text-muted">{event.type}</p>
+            </div>
             <button
               onClick={() => setRegOpen(true)}
               disabled={event.status !== 'Registration Open'}
-              className="w-full bg-ink text-paper font-mono text-[10px] tracking-widest py-4 hover:bg-orange transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full font-mono text-[11px] tracking-widest py-4 text-paper transition-opacity hover:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed"
+              style={{ backgroundColor: theme.primary }}
             >
               {event.status === 'Registration Open' ? 'REGISTER NOW →' : 'COMING SOON'}
             </button>
+            {event.status !== 'Registration Open' && (
+              <p className="font-mono text-[10px] text-muted text-center">
+                Registration details will be announced soon.
+              </p>
+            )}
           </div>
 
-          {/* Coordinator */}
-          <div className="border border-rule p-8 space-y-5">
-            <Label className="block">EVENT COORDINATORS</Label>
-            <div className="space-y-4">
-              <div>
-                <Label className="text-muted/60 block mb-1">Faculty</Label>
-                {event.coordinators.faculty.map((n, i) => (
-                  <p key={i} className="text-sm text-ink font-grotesk">{n}</p>
-                ))}
+          {/* All info */}
+          <div className="border border-rule p-7 space-y-4">
+            <Label className="text-muted block">EVENT INFORMATION</Label>
+            {[
+              ['DATE',   event.date],
+              ['TIME',   event.time],
+              ['VENUE',  event.venue],
+              ['TEAM',   event.participants],
+              ['FEE',    event.fee],
+              ['STATUS', event.status],
+            ].map(([k, v]) => (
+              <div key={k} className="flex justify-between gap-4 py-2 border-b border-rule last:border-0">
+                <Label className="text-muted">{k}</Label>
+                <span className="font-mono text-[11px] text-ink text-right">{v}</span>
               </div>
-              <div>
-                <Label className="text-muted/60 block mb-1">Student</Label>
-                {event.coordinators.student.map((n, i) => (
-                  <p key={i} className="text-sm text-ink font-grotesk">{n}</p>
-                ))}
-              </div>
-              <div>
-                <Label className="text-muted/60 block mb-1">Contact</Label>
-                <p className="text-sm text-orange font-grotesk">{event.coordinators.contact}</p>
-              </div>
+            ))}
+          </div>
+
+          {/* Coordinators */}
+          <div className="border border-rule p-7 space-y-4">
+            <Label className="text-muted block">COORDINATORS</Label>
+            <div className="space-y-3">
+              {[
+                ['FACULTY', event.coordinators.faculty.join(', ')],
+                ['STUDENT', event.coordinators.student.join(', ')],
+                ['CONTACT', event.coordinators.contact],
+              ].map(([k, v]) => (
+                <div key={k}>
+                  <Label className="text-muted/50 block mb-0.5">{k}</Label>
+                  <p className="font-grotesk text-sm" style={{ color: k === 'CONTACT' ? theme.primary : '#0F0F0D' }}>{v}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -217,43 +263,67 @@ export default function EventDetails() {
       <div className="border-t border-rule">
         <div className="max-w-screen-xl mx-auto px-6 md:px-10 py-0 grid grid-cols-2 divide-x divide-rule">
           {prev ? (
-            <Link to={`/events/${prev.id}`} className="py-8 pr-8 hover:bg-surface transition-colors group">
-              <Label className="block mb-2">← PREVIOUS</Label>
-              <p className="font-display text-xl text-ink group-hover:text-orange transition-colors leading-none">
-                {prev.name}
-              </p>
+            <Link to={`/events/${prev.id}`} className="py-8 pr-6 hover:bg-surface transition-colors group flex flex-col gap-2">
+              <span className="font-mono text-[10px] text-muted flex items-center gap-1">
+                <ArrowLeft className="w-3 h-3"/> PREVIOUS
+              </span>
+              <p className="font-display text-xl text-ink group-hover:text-orange transition-colors leading-none">{prev.name}</p>
+              <div className="w-8 h-0.5" style={{ backgroundColor: getEventTheme(prev.id).primary }}/>
             </Link>
-          ) : <div />}
+          ) : <div/>}
           {next ? (
-            <Link to={`/events/${next.id}`} className="py-8 pl-8 hover:bg-surface transition-colors group text-right">
-              <Label className="block mb-2">NEXT →</Label>
-              <p className="font-display text-xl text-ink group-hover:text-orange transition-colors leading-none">
-                {next.name}
-              </p>
+            <Link to={`/events/${next.id}`} className="py-8 pl-6 hover:bg-surface transition-colors group flex flex-col items-end gap-2 text-right">
+              <span className="font-mono text-[10px] text-muted flex items-center gap-1">
+                NEXT <ArrowRight className="w-3 h-3"/>
+              </span>
+              <p className="font-display text-xl text-ink group-hover:text-orange transition-colors leading-none">{next.name}</p>
+              <div className="w-8 h-0.5" style={{ backgroundColor: getEventTheme(next.id).primary }}/>
             </Link>
-          ) : <div />}
+          ) : <div/>}
         </div>
       </div>
 
-      {/* ── Registration modal (placeholder) ─────────────── */}
-      {regOpen && (
-        <div className="fixed inset-0 z-50 bg-ink/80 flex items-center justify-center p-4" onClick={() => setRegOpen(false)}>
-          <div className="bg-paper w-full max-w-md p-10 space-y-6" onClick={e => e.stopPropagation()}>
-            <div className="flex justify-between items-start">
-              <div>
-                <Label className="block mb-1">REGISTRATION</Label>
-                <h2 className="font-display text-2xl">{event.name}</h2>
+      {/* ── Registration modal ────────────────────────────── */}
+      <AnimatePresence>
+        {regOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            style={{ backgroundColor: 'rgba(15,15,13,0.75)' }}
+            onClick={() => setRegOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 10 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95 }}
+              className="bg-paper w-full max-w-md p-10 space-y-6"
+              style={{ borderTop: `4px solid ${theme.primary}` }}
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="flex justify-between items-start">
+                <div>
+                  <Label className="text-muted block mb-1">REGISTRATION</Label>
+                  <h2 className="font-display text-2xl">{event.name}</h2>
+                </div>
+                <button onClick={() => setRegOpen(false)} className="font-mono text-[11px] text-muted hover:text-ink transition-colors">✕ CLOSE</button>
               </div>
-              <button onClick={() => setRegOpen(false)} className="font-mono text-[11px] text-muted hover:text-ink">✕</button>
-            </div>
-            <p className="text-sm text-muted">Registration details will be available soon. Check back or contact the coordinators.</p>
-            <p className="font-mono text-[11px] text-orange">{event.coordinators.contact}</p>
-            <button onClick={() => setRegOpen(false)} className="w-full bg-ink text-paper font-mono text-[10px] tracking-widest py-4 hover:bg-orange transition-colors">
-              CLOSE
-            </button>
-          </div>
-        </div>
-      )}
+              <p className="text-sm text-mid leading-relaxed">
+                Registration details will be announced soon. Please check back or contact the event coordinators.
+              </p>
+              <p className="font-mono text-[11px]" style={{ color: theme.primary }}>{event.coordinators.contact}</p>
+              <button
+                onClick={() => setRegOpen(false)}
+                className="w-full font-mono text-[10px] tracking-widest py-4 text-paper transition-opacity hover:opacity-80"
+                style={{ backgroundColor: theme.primary }}
+              >
+                CLOSE
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

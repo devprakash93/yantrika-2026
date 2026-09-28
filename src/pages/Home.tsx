@@ -191,111 +191,109 @@ export default function Home() {
 /* ─────────────────────────────────────────────────────── */
 import { events } from '../data';
 
-const CATEGORY_COLOR: Record<string, string> = {
-  'Robotics & Hardware':  '#0057FF',
-  'Coding & Development': '#0057FF',
-  'Design & Innovation':  '#0057FF',
-  'Academic & Knowledge': '#0057FF',
-  'Cultural':             '#FF4D00',
-  'Cultural / Creative':  '#FF4D00',
-  'Gaming':               '#F5E142',
-};
+import { getEventTheme } from '../data/eventThemes';
+import { EventGraphic } from '../components/EventGraphics';
+
+const CATEGORY_BLOCKS = [
+  { label: 'TECH',     color: '#1D4ED8', desc: 'Robotics, IoT, Coding & Design' },
+  { label: 'ACADEMIC', color: '#7C3AED', desc: 'Paper, Poster & Quiz events' },
+  { label: 'CULTURAL', color: '#BE185D', desc: 'Flash mob & performance' },
+  { label: 'CREATIVE', color: '#1C1917', extra: '#F5E142', desc: 'Photography & Reels' },
+  { label: 'FOOD',     color: '#EA580C', desc: 'Swaad Sutra food festival' },
+  { label: 'GAMING',   color: '#DC2626', desc: 'BGMI competitive tournament' },
+];
 
 function EventPreview({ setObserve }: { setObserve: (_: Element|null, id: string) => void }) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const preview = events.slice(0, 6);
 
   return (
-    <section
-      ref={el => setObserve(el, 'events')}
-      className="max-w-screen-xl mx-auto px-6 md:px-10 py-24 md:py-32"
-    >
-      {/* Section header */}
-      <div className="flex items-end justify-between mb-12 border-b border-rule pb-6">
-        <div>
-          <Label className="block mb-3">02 — EVENT INDEX</Label>
-          <h2 className="font-display text-4xl md:text-5xl text-ink leading-none">CHOOSE YOUR ARENA</h2>
+    <section ref={el => setObserve(el, 'events')} className="bg-paper">
+      {/* Category color blocks */}
+      <div className="border-y border-rule overflow-x-auto scrollbar-none">
+        <div className="flex min-w-max">
+          {CATEGORY_BLOCKS.map(cat => (
+            <Link
+              key={cat.label}
+              to="/events"
+              className="flex-shrink-0 flex flex-col justify-between p-6 md:p-8 border-r border-rule hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: cat.color, minWidth: 160 }}
+            >
+              <span className="font-mono text-[9px] tracking-[0.2em] text-white/50">{cat.label}</span>
+              <div className="mt-8">
+                <p className="font-display text-xl text-white leading-none">{cat.label}</p>
+                <p className="font-mono text-[9px] text-white/50 mt-1.5 leading-relaxed">{cat.desc}</p>
+              </div>
+            </Link>
+          ))}
         </div>
-        <Link to="/events" data-cursor-view className="font-mono text-[11px] tracking-widest text-muted hover:text-ink transition-colors hidden md:block">
-          VIEW ALL 10 →
-        </Link>
       </div>
 
-      {/* Event rows */}
-      <div className="divide-y divide-rule">
-        {preview.map((event, i) => {
-          const isHovered = hoveredId === event.id;
-          const accent = CATEGORY_COLOR[event.category] ?? '#0F0F0D';
-          return (
-            <div
-              key={event.id}
-              onMouseEnter={() => setHoveredId(event.id)}
-              onMouseLeave={() => setHoveredId(null)}
-              className={`transition-colors duration-200 ${isHovered ? 'bg-surface' : ''}`}
-            >
-              <div className="flex items-center gap-4 md:gap-8 py-5 md:py-6">
-                {/* Number */}
-                <motion.span
-                  animate={{ scale: isHovered ? 1.15 : 1, color: isHovered ? '#FF4D00' : '#8C8C83' }}
-                  className="font-mono text-[11px] w-8 flex-shrink-0"
-                >
-                  {String(i + 1).padStart(2, '0')}
-                </motion.span>
+      {/* Events list */}
+      <div className="max-w-screen-xl mx-auto px-6 md:px-10 py-16 md:py-24">
+        <div className="flex items-end justify-between mb-10 border-b border-rule pb-6">
+          <div>
+            <Label className="block mb-3 text-muted">02 — EVENT PREVIEW</Label>
+            <h2 className="font-display text-4xl md:text-5xl text-ink leading-none">CHOOSE YOUR ARENA</h2>
+          </div>
+          <Link to="/events" data-cursor-view className="font-mono text-[11px] tracking-widest text-muted hover:text-ink transition-colors hidden md:block">
+            VIEW ALL {events.length} →
+          </Link>
+        </div>
 
-                {/* Name + type */}
-                <div className="flex-1 min-w-0">
-                  <p
-                    className="font-display leading-none truncate transition-colors"
-                    style={{ fontSize: 'clamp(18px, 2.8vw, 32px)', color: isHovered ? accent : '#0F0F0D' }}
-                  >
-                    {event.name}
-                  </p>
-                  <p className="font-mono text-[10px] text-muted tracking-widest uppercase mt-1 truncate">
-                    {event.type}
-                  </p>
-                </div>
-
-                {/* Fee */}
-                <span className="font-mono text-[11px] text-muted hidden sm:block flex-shrink-0">{event.fee}</span>
-
-                {/* CTA */}
-                <Link
-                  to={`/events/${event.id}`}
-                  data-cursor-view
-                  className="font-mono text-[10px] tracking-widest text-muted hover:text-ink transition-colors flex-shrink-0 hidden md:block"
-                >
-                  VIEW →
-                </Link>
-              </div>
-
-              {/* Hover expansion */}
-              <motion.div
-                initial={false}
-                animate={{ height: isHovered ? 'auto' : 0, opacity: isHovered ? 1 : 0 }}
-                transition={{ duration: 0.22 }}
-                className="overflow-hidden"
+        <div className="divide-y divide-rule">
+          {preview.map((event, i) => {
+            const theme    = getEventTheme(event.id);
+            const isHov    = hoveredId === event.id;
+            return (
+              <div
+                key={event.id}
+                onMouseEnter={() => setHoveredId(event.id)}
+                onMouseLeave={() => setHoveredId(null)}
+                style={{
+                  borderLeft: `4px solid ${isHov ? theme.primary : 'transparent'}`,
+                  backgroundColor: isHov ? `${theme.primary}08` : 'transparent',
+                }}
+                className="-mx-6 md:-mx-10 px-6 md:px-10 transition-all duration-200"
               >
-                <div className="pl-12 pb-6 pr-4 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-                  <p className="text-sm text-mid leading-relaxed max-w-2xl">{event.description}</p>
-                  <Link
-                    to={`/events/${event.id}`}
-                    data-cursor-register
-                    className="bg-ink text-paper font-mono text-[10px] tracking-widest px-6 py-3 hover:bg-orange transition-colors flex-shrink-0 inline-block"
+                <div className="flex items-center gap-4 md:gap-6 py-5 md:py-6">
+                  <motion.span
+                    animate={{ color: isHov ? theme.primary : '#8C8C83', scale: isHov ? 1.15 : 1 }}
+                    className="font-mono text-[12px] font-bold w-8 flex-shrink-0"
                   >
-                    REGISTER →
+                    {String(i + 1).padStart(2, '0')}
+                  </motion.span>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-display leading-none truncate transition-colors" style={{ fontSize:'clamp(19px,3vw,36px)', color: isHov ? theme.primary : '#0F0F0D' }}>
+                      {event.name}
+                    </p>
+                    <p className="font-mono text-[10px] text-muted tracking-widest uppercase mt-1">{event.type}</p>
+                  </div>
+                  <motion.div animate={{ opacity: isHov ? 1 : 0.3 }} className="flex-shrink-0 hidden sm:block">
+                    <EventGraphic type={theme.graphicType} color={theme.primary} muted={theme.muted} size={60}/>
+                  </motion.div>
+                  <Link to={`/events/${event.id}`} data-cursor-view className="font-mono text-[10px] tracking-widest text-muted hover:text-ink transition-colors flex-shrink-0 ml-2">
+                    VIEW →
                   </Link>
                 </div>
-              </motion.div>
-            </div>
-          );
-        })}
-      </div>
+                <motion.div initial={false} animate={{ height: isHov ? 'auto' : 0, opacity: isHov ? 1 : 0 }} transition={{ duration: 0.22 }} className="overflow-hidden">
+                  <div className="pl-12 pb-6 pr-2 flex flex-col md:flex-row md:items-end gap-4">
+                    <p className="text-sm text-mid leading-relaxed max-w-xl">{event.description}</p>
+                    <Link to={`/events/${event.id}`} data-cursor-register className="font-mono text-[10px] tracking-widest px-6 py-3 text-paper inline-block flex-shrink-0 transition-opacity hover:opacity-80" style={{ backgroundColor: theme.primary }}>
+                      REGISTER →
+                    </Link>
+                  </div>
+                </motion.div>
+              </div>
+            );
+          })}
+        </div>
 
-      {/* View all link */}
-      <div className="mt-8 text-center md:hidden">
-        <Link to="/events" className="font-mono text-[11px] tracking-widest text-muted hover:text-ink transition-colors underline underline-offset-4">
-          VIEW ALL 10 EVENTS →
-        </Link>
+        <div className="mt-8 text-center md:hidden">
+          <Link to="/events" className="font-mono text-[11px] tracking-widest text-muted hover:text-ink underline underline-offset-4">
+            VIEW ALL {events.length} EVENTS →
+          </Link>
+        </div>
       </div>
     </section>
   );
