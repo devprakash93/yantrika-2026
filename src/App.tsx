@@ -12,12 +12,15 @@ import FAQ from './pages/FAQ';
 import Contact from './pages/Contact';
 import Search from './pages/Search';
 
+import MobileNav from './components/MobileNav';
+
 function App() {
   return (
     <Router>
       <CustomCursor />
-      <div className="flex flex-col min-h-screen bg-paper">
+      <div className="flex flex-col min-h-screen bg-paper pb-[68px] md:pb-0">
         <Navbar />
+        <MobileNav />
         <main className="flex-grow">
           <Routes>
             <Route path="/"           element={<Home />} />
