@@ -26,12 +26,12 @@ export interface Event {
 }
 
 export const categoryColors: Record<EventCategory, { text: string; bg: string; border: string }> = {
-  'Robotics & Hardware':  { text: '#60A5FA', bg: 'rgba(96,165,250,0.08)',  border: 'rgba(96,165,250,0.2)'  },
-  'Coding & Development': { text: '#34D399', bg: 'rgba(52,211,153,0.08)',  border: 'rgba(52,211,153,0.2)'  },
-  'Design & Innovation':  { text: '#E8B84B', bg: 'rgba(232,184,75,0.08)',  border: 'rgba(232,184,75,0.2)'  },
-  'Academic & Knowledge': { text: '#A78BFA', bg: 'rgba(167,139,250,0.08)', border: 'rgba(167,139,250,0.2)' },
-  'Gaming':               { text: '#F87171', bg: 'rgba(248,113,113,0.08)', border: 'rgba(248,113,113,0.2)' },
-  'Cultural':             { text: '#FB923C', bg: 'rgba(251,146,60,0.08)',  border: 'rgba(251,146,60,0.2)'  },
+  'Robotics & Hardware':  { text: '#0284C7', bg: '#F0F9FF', border: '#E0F2FE' },
+  'Coding & Development': { text: '#059669', bg: '#ECFDF5', border: '#D1FAE5' },
+  'Design & Innovation':  { text: '#D97706', bg: '#FFFBEB', border: '#FEF3C7' },
+  'Academic & Knowledge': { text: '#7C3AED', bg: '#F5F3FF', border: '#EDE9FE' },
+  'Gaming':               { text: '#DC2626', bg: '#FEF2F2', border: '#FEE2E2' },
+  'Cultural':             { text: '#EA580C', bg: '#FFF7ED', border: '#FFEDD5' },
 };
 
 export const events: Event[] = [

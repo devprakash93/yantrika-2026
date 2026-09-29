@@ -24,7 +24,7 @@ export default function Countdown() {
   if (t.expired) {
     return (
       <div className="text-center py-3">
-        <p className="ui font-bold tracking-widest uppercase text-sm" style={{ color: '#EAB84A' }}>
+        <p className="ui font-bold tracking-widest uppercase text-sm" style={{ color: 'var(--gold)' }}>
           🎉 YANTRIKA 2026 IS LIVE
         </p>
       </div>

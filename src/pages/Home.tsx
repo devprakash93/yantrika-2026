@@ -33,7 +33,7 @@ function Hero() {
     <section className="hero-wrap dot-grid diag-lines" aria-label="YANTRIKA 2026">
       {/* Centre glow */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true"
-        style={{ background: 'radial-gradient(ellipse 75% 60% at 50% 50%, rgba(234,184,74,0.055) 0%, transparent 65%)' }} />
+        style={{ background: 'radial-gradient(ellipse 75% 60% at 50% 50%, rgba(37,99,235,0.055) 0%, transparent 65%)' }} />
 
       {/* Bottom fade into next section */}
       <div className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none" aria-hidden="true"
@@ -42,7 +42,7 @@ function Hero() {
       <div className="container relative z-10 flex flex-col items-center text-center">
 
         {/* ── chip ── */}
-        <div className="mb-6" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.35rem 0.875rem', borderRadius: '3px', border: '1px solid rgba(234,184,74,0.22)', background: 'rgba(234,184,74,0.04)' }}>
+        <div className="mb-6" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.35rem 0.875rem', borderRadius: '3px', border: '1px solid rgba(37,99,235,0.22)', background: 'rgba(37,99,235,0.04)' }}>
           <span style={{ display: 'block', width: '6px', height: '6px', borderRadius: '50%', background: 'var(--gold)', animation: 'pulse-glow 2s infinite' }} aria-hidden="true" />
           <span className="ui" style={{ fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--gold)' }}>
             Technical Fest · DRIEMS University
@@ -56,7 +56,7 @@ function Hero() {
         <p className="ui" style={{ fontSize: 'clamp(1rem, 3.5vw, 2rem)', fontWeight: 700, letterSpacing: '0.45em', color: 'var(--tx-2)', marginBottom: '0.375rem' }}>
           2026
         </p>
-        <p className="ui" style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.25em', textTransform: 'uppercase', color: 'rgba(234,184,74,0.55)', marginBottom: '2.5rem' }}>
+        <p className="ui" style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.25em', textTransform: 'uppercase', color: 'rgba(37,99,235,0.55)', marginBottom: '2.5rem' }}>
           Technical Fest
         </p>
 
@@ -323,7 +323,7 @@ function FinalCTA() {
     >
       {/* Background accent */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true"
-        style={{ background: 'radial-gradient(ellipse 60% 70% at 50% 100%, rgba(234,184,74,0.05) 0%, transparent 70%)' }} />
+        style={{ background: 'radial-gradient(ellipse 60% 70% at 50% 100%, rgba(37,99,235,0.05) 0%, transparent 70%)' }} />
       <div className="eng-grid absolute inset-0" aria-hidden="true" style={{ opacity: 0.4 }} />
 
       <div className="container relative z-10 text-center">
