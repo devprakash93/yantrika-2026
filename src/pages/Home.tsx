@@ -4,191 +4,210 @@ import Countdown from '../components/Countdown';
 import { REGISTER_NOW_URL } from '../config';
 import { events, categories, categoryColors, categoryIcons, featuredEventIds } from '../data/events';
 
+/* ── shared reveal hook ─────────────────────────────────── */
 function useReveal(ref: React.RefObject<HTMLElement | null>) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.querySelectorAll('.reveal').forEach((r, i) => {
-              setTimeout(() => r.classList.add('visible'), i * 80);
-            });
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1 }
+    const obs = new IntersectionObserver(
+      entries => entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.querySelectorAll('.reveal').forEach((r, i) =>
+            setTimeout(() => r.classList.add('visible'), i * 75)
+          );
+          obs.unobserve(e.target);
+        }
+      }),
+      { threshold: 0.08 }
     );
-    observer.observe(el);
-    return () => observer.disconnect();
+    obs.observe(el);
+    return () => obs.disconnect();
   }, [ref]);
 }
 
-// ── Hero ─────────────────────────────────────────────────────
+/* ── HERO ───────────────────────────────────────────────── */
 function Hero() {
-  const navigate = useNavigate();
+  const nav = useNavigate();
+
   return (
-    <section className="hero-section tech-grid" aria-label="YANTRIKA 2026 Hero">
-      {/* Radial glow */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        aria-hidden="true"
-        style={{ background: 'radial-gradient(ellipse 70% 55% at 50% 45%, rgba(232,184,75,0.05) 0%, transparent 70%)' }}
-      />
+    <section className="hero-wrap dot-grid diag-lines" aria-label="YANTRIKA 2026">
+      {/* Centre glow */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true"
+        style={{ background: 'radial-gradient(ellipse 75% 60% at 50% 50%, rgba(234,184,74,0.055) 0%, transparent 65%)' }} />
 
-      <div className="container relative z-10">
-        <div className="flex flex-col items-center text-center">
+      {/* Bottom fade into next section */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none" aria-hidden="true"
+        style={{ background: 'linear-gradient(to bottom, transparent, var(--bg))' }} />
 
-          {/* Overline chip */}
-          <div
-            className="inline-flex items-center gap-2 mb-5 px-3 py-1.5 rounded-sm border"
-            style={{ borderColor: 'rgba(232,184,75,0.25)', background: 'rgba(232,184,75,0.05)' }}
-          >
-            <span
-              className="text-[0.6rem] font-bold tracking-[0.2em] uppercase text-[#E8B84B]"
-              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-            >
-              Technical Fest · DRIEMS University
+      <div className="container relative z-10 flex flex-col items-center text-center">
+
+        {/* ── chip ── */}
+        <div className="mb-6" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.35rem 0.875rem', borderRadius: '3px', border: '1px solid rgba(234,184,74,0.22)', background: 'rgba(234,184,74,0.04)' }}>
+          <span style={{ display: 'block', width: '6px', height: '6px', borderRadius: '50%', background: 'var(--gold)', animation: 'pulse-glow 2s infinite' }} aria-hidden="true" />
+          <span className="ui" style={{ fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--gold)' }}>
+            Technical Fest · DRIEMS University
+          </span>
+        </div>
+
+        {/* ── Main title ── */}
+        <h1 className="display gold-text" style={{ fontSize: 'clamp(3.5rem, 14vw, 9.5rem)', marginBottom: '0.25rem' }}>
+          YANTRIKA
+        </h1>
+        <p className="ui" style={{ fontSize: 'clamp(1rem, 3.5vw, 2rem)', fontWeight: 700, letterSpacing: '0.45em', color: 'var(--tx-2)', marginBottom: '0.375rem' }}>
+          2026
+        </p>
+        <p className="ui" style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.25em', textTransform: 'uppercase', color: 'rgba(234,184,74,0.55)', marginBottom: '2.5rem' }}>
+          Technical Fest
+        </p>
+
+        {/* ── Countdown ── */}
+        <div style={{ width: '100%', maxWidth: '22rem', marginBottom: '2.25rem' }}>
+          <Countdown />
+        </div>
+
+        <hr className="hero-rule" style={{ marginBottom: '1.75rem' }} />
+
+        {/* ── Event meta ── */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'center', marginBottom: '2.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <svg width="14" height="14" fill="none" stroke="var(--gold)" strokeWidth="1.6" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+            <span className="ui" style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--tx)', letterSpacing: '0.03em' }}>
+              08–09 October 2026
             </span>
           </div>
-
-          {/* Main heading */}
-          <h1
-            className="text-display gold-text mb-2"
-            style={{ fontSize: 'clamp(3rem,13vw,8rem)' }}
-          >
-            YANTRIKA
-          </h1>
-          <p
-            className="text-ui font-bold tracking-[0.4em] uppercase mb-1"
-            style={{ fontSize: 'clamp(0.9rem,3vw,1.5rem)', color: '#7A7A88' }}
-          >
-            2026
-          </p>
-          <p
-            className="text-ui font-semibold tracking-[0.15em] uppercase mb-8"
-            style={{ fontSize: 'clamp(0.7rem,2vw,0.85rem)', color: 'rgba(232,184,75,0.6)' }}
-          >
-            Technical Fest
-          </p>
-
-          {/* Countdown */}
-          <div className="w-full max-w-sm mb-8">
-            <Countdown />
-          </div>
-
-          {/* Event meta */}
-          <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6 mb-8 text-sm">
-            <div className="flex items-center gap-2" style={{ color: '#F2EEE4' }}>
-              <svg className="w-4 h-4 flex-shrink-0" style={{ color: '#E8B84B' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6} aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              <span className="text-ui font-semibold">08–09 October 2026</span>
-            </div>
-            <span className="hidden sm:block w-px h-4" style={{ background: '#1E1E28' }} aria-hidden="true" />
-            <div className="flex items-center gap-2 text-center sm:text-left" style={{ color: '#F2EEE4' }}>
-              <svg className="w-4 h-4 flex-shrink-0" style={{ color: '#E8B84B' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6} aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              <span className="text-ui font-medium" style={{ color: '#7A7A88' }}>
-                Academic Block–1, CSE, SOET · DRIEMS University
-              </span>
-            </div>
-          </div>
-
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-            <button
-              id="hero-explore-btn"
-              onClick={() => { navigate('/events'); window.scrollTo({ top: 0 }); }}
-              className="btn btn-gold btn-full"
-            >
-              Explore Events
-            </button>
-            <a
-              id="hero-register-btn"
-              href={REGISTER_NOW_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-ghost btn-full"
-            >
-              Register Now
-            </a>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <svg width="14" height="14" fill="none" stroke="var(--gold)" strokeWidth="1.6" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span className="ui" style={{ fontSize: '0.78rem', fontWeight: 500, color: 'var(--tx-2)', letterSpacing: '0.02em' }}>
+              Academic Block–1, CSE, SOET · DRIEMS University
+            </span>
           </div>
         </div>
-      </div>
-    </section>
-  );
-}
 
-// ── About Snapshot ───────────────────────────────────────────
-function AboutSnapshot() {
-  const ref = useRef<HTMLElement>(null);
-  useReveal(ref);
-  const navigate = useNavigate();
-
-  return (
-    <section ref={ref} className="section border-t" style={{ borderColor: '#1E1E28' }} aria-labelledby="about-snapshot-heading">
-      <div className="container">
-        <div className="reveal">
-          <span className="section-label">About the Fest</span>
-          <h2 id="about-snapshot-heading" className="section-heading mb-4">
-            What is YANTRIKA 2026?
-          </h2>
-        </div>
-        <div className="reveal" style={{ transitionDelay: '80ms' }}>
-          <p className="text-[#7A7A88] leading-relaxed max-w-2xl mb-5" style={{ fontSize: '0.95rem' }}>
-            YANTRIKA 2026 is a university-level techno-cultural fest organized by the{' '}
-            <strong className="text-[#F2EEE4] font-semibold">Department of Computer Science & Engineering</strong>,{' '}
-            School of Engineering & Technology, DRIEMS University. The fest brings together students to
-            participate in technical challenges, coding competitions, innovation activities, academic
-            presentations, gaming, and cultural events.
-          </p>
+        {/* ── CTAs ── */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', maxWidth: '20rem' }}>
           <button
-            onClick={() => { navigate('/about'); window.scrollTo({ top: 0 }); }}
-            className="btn btn-gold-outline"
-            style={{ minHeight: '42px', padding: '0.6rem 1.25rem', fontSize: '0.75rem' }}
+            id="hero-explore"
+            className="btn btn-gold btn-w"
+            onClick={() => { nav('/events'); window.scrollTo({ top: 0 }); }}
+            style={{ minHeight: '50px', fontSize: '0.8rem' }}
           >
-            Learn More →
+            Explore Events
+            <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5-5 5M6 12h12" />
+            </svg>
           </button>
+          <a
+            id="hero-register"
+            href={REGISTER_NOW_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-ghost btn-w"
+            style={{ minHeight: '50px', fontSize: '0.8rem' }}
+          >
+            Register Now
+          </a>
+        </div>
+
+        {/* ── Scroll indicator ── */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2" aria-hidden="true">
+          <span className="ui" style={{ fontSize: '0.55rem', fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--tx-3)' }}>Scroll</span>
+          <div style={{ width: '1px', height: '36px', background: 'linear-gradient(to bottom, var(--gold-dim), transparent)' }} />
         </div>
       </div>
     </section>
   );
 }
 
-// ── Categories ───────────────────────────────────────────────
-function CategoriesSection() {
+/* ── ABOUT SNAPSHOT ─────────────────────────────────────── */
+function AboutSnap() {
   const ref = useRef<HTMLElement>(null);
   useReveal(ref);
-  const navigate = useNavigate();
+  const nav = useNavigate();
 
   return (
-    <section ref={ref} className="section border-t" style={{ borderColor: '#1E1E28', background: '#111115' }} aria-labelledby="categories-heading">
+    <section ref={ref} className="section" style={{ borderTop: '1px solid var(--border)' }} aria-labelledby="about-snap-h">
       <div className="container">
-        <div className="reveal">
-          <span className="section-label">Categories</span>
-          <h2 id="categories-heading" className="section-heading mb-6">Event Categories</h2>
+        <div style={{ display: 'grid', gap: '3rem', gridTemplateColumns: '1fr' }}>
+
+          {/* Text */}
+          <div style={{ maxWidth: '640px' }}>
+            <div className="reveal">
+              <p className="section-eyebrow">About</p>
+              <h2 id="about-snap-h" className="section-h" style={{ marginBottom: '1.25rem' }}>What is YANTRIKA?</h2>
+            </div>
+            <div className="reveal" style={{ transitionDelay: '70ms' }}>
+              <p style={{ color: 'var(--tx-2)', lineHeight: 1.75, fontSize: '0.95rem', marginBottom: '1rem' }}>
+                <strong style={{ color: 'var(--tx)', fontWeight: 600 }}>YANTRIKA 2026</strong> is a university-level
+                techno-cultural fest organized by the{' '}
+                <strong style={{ color: 'var(--tx)', fontWeight: 600 }}>Department of Computer Science & Engineering</strong>,
+                School of Engineering & Technology, DRIEMS University.
+              </p>
+              <p style={{ color: 'var(--tx-2)', lineHeight: 1.75, fontSize: '0.95rem', marginBottom: '1.75rem' }}>
+                The fest brings together students to compete, innovate, and collaborate across 12 events spanning
+                robotics, coding, design, academics, gaming, and culture.
+              </p>
+              <button
+                className="btn btn-outline"
+                onClick={() => { nav('/about'); window.scrollTo({ top: 0 }); }}
+                style={{ minHeight: '44px', fontSize: '0.75rem' }}
+              >
+                Learn More →
+              </button>
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div className="reveal stat-grid" style={{ transitionDelay: '140ms' }}>
+            {[
+              { n: '12', l: 'Competitions' },
+              { n: '6',  l: 'Categories'   },
+              { n: '2',  l: 'Days'         },
+              { n: '∞',  l: 'Possibilities'},
+            ].map(({ n, l }) => (
+              <div key={l} className="stat-cell">
+                <p className="display" style={{ fontSize: 'clamp(2rem,5vw,2.75rem)', color: 'var(--gold)', marginBottom: '0.25rem' }}>{n}</p>
+                <p className="ui" style={{ fontSize: '0.68rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--tx-3)' }}>{l}</p>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="category-grid">
+      </div>
+    </section>
+  );
+}
+
+/* ── CATEGORIES ─────────────────────────────────────────── */
+function Categories() {
+  const ref = useRef<HTMLElement>(null);
+  useReveal(ref);
+  const nav = useNavigate();
+
+  return (
+    <section ref={ref} className="section" style={{ borderTop: '1px solid var(--border)', background: 'var(--bg-1)' }} aria-labelledby="cats-h">
+      <div className="container">
+        <div className="reveal" style={{ marginBottom: '2rem' }}>
+          <p className="section-eyebrow">Explore</p>
+          <h2 id="cats-h" className="section-h">Event Categories</h2>
+        </div>
+        <div className="cat-grid">
           {categories.map((cat, i) => {
-            const cfg = categoryColors[cat];
+            const c = categoryColors[cat];
             return (
               <button
                 key={cat}
-                className="reveal card text-left p-4 cursor-pointer bg-transparent border-none w-full group"
-                style={{ transitionDelay: `${i * 50}ms`, background: '#13131A', border: `1px solid #1E1E28`, borderRadius: '6px' }}
-                onClick={() => { navigate('/events'); window.scrollTo({ top: 0 }); }}
+                className="reveal cat-card"
+                style={{ '--cat-color': c.text, transitionDelay: `${i * 55}ms` } as React.CSSProperties}
+                onClick={() => { nav('/events'); window.scrollTo({ top: 0 }); }}
                 aria-label={`View ${cat} events`}
               >
-                <span className="block text-2xl mb-2" role="img" aria-hidden="true">{categoryIcons[cat]}</span>
-                <p
-                  className="text-xs font-semibold leading-snug transition-colors duration-200 group-hover:text-[#F2EEE4]"
-                  style={{ fontFamily: "'Space Grotesk', sans-serif", color: cfg.text }}
-                >
+                <span style={{ fontSize: '1.5rem', display: 'block', marginBottom: '0.625rem' }} role="img" aria-hidden="true">
+                  {categoryIcons[cat]}
+                </span>
+                <p className="ui" style={{ fontSize: '0.72rem', fontWeight: 700, color: c.text, lineHeight: 1.3 }}>
                   {cat}
                 </p>
               </button>
@@ -200,95 +219,84 @@ function CategoriesSection() {
   );
 }
 
-// ── Featured Events ──────────────────────────────────────────
+/* ── FEATURED EVENTS ────────────────────────────────────── */
 function FeaturedEvents() {
   const ref = useRef<HTMLElement>(null);
   useReveal(ref);
-  const navigate = useNavigate();
-
-  const featured = events.filter((e) => featuredEventIds.includes(e.id));
+  const nav = useNavigate();
+  const featured = events.filter(e => featuredEventIds.includes(e.id));
 
   return (
-    <section ref={ref} className="section border-t" style={{ borderColor: '#1E1E28' }} aria-labelledby="featured-heading">
+    <section ref={ref} className="section" style={{ borderTop: '1px solid var(--border)' }} aria-labelledby="feat-h">
       <div className="container">
-        <div className="reveal flex items-end justify-between mb-6 gap-4">
+        <div className="reveal" style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '2rem', gap: '1rem' }}>
           <div>
-            <span className="section-label">Spotlight</span>
-            <h2 id="featured-heading" className="section-heading">Featured Events</h2>
+            <p className="section-eyebrow">Spotlight</p>
+            <h2 id="feat-h" className="section-h">Featured Events</h2>
           </div>
           <button
-            onClick={() => { navigate('/events'); window.scrollTo({ top: 0 }); }}
-            className="text-ui text-xs font-semibold tracking-wide bg-transparent border-none cursor-pointer flex-shrink-0"
-            style={{ color: '#E8B84B' }}
+            className="ui bg-transparent border-none cursor-pointer"
+            style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--gold)', flexShrink: 0 }}
+            onClick={() => { nav('/events'); window.scrollTo({ top: 0 }); }}
           >
             View All →
           </button>
         </div>
 
         <div className="events-grid">
-          {featured.map((event, i) => {
-            const cfg = categoryColors[event.category];
+          {featured.map((ev, i) => {
+            const c = categoryColors[ev.category];
             return (
               <article
-                key={event.id}
+                key={ev.id}
                 className="reveal event-card"
-                style={{ transitionDelay: `${i * 70}ms` }}
-                aria-labelledby={`featured-${event.id}-name`}
+                style={{ '--cat-color': c.text, transitionDelay: `${i * 65}ms` } as React.CSSProperties}
+                aria-labelledby={`feat-${ev.id}`}
               >
-                {/* Top row */}
-                <div className="flex items-start justify-between gap-2">
-                  <span
-                    className="text-[2.5rem] leading-none font-black"
-                    style={{ fontFamily: "'Playfair Display', serif", color: '#1E1E28' }}
-                    aria-hidden="true"
-                  >
-                    {event.num}
-                  </span>
-                  <span
-                    className="category-badge"
-                    style={{ color: cfg.text, background: cfg.bg }}
-                  >
-                    {event.category}
+                {/* Watermark number */}
+                <span className="event-num-bg" aria-hidden="true">{ev.num}</span>
+
+                {/* Category + num row */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', paddingLeft: '0.5rem' }}>
+                  <span className="cat-badge" style={{ color: c.text, background: c.bg }}>{ev.category}</span>
+                  <span className="ui" style={{ fontSize: '0.6rem', fontWeight: 700, color: 'var(--tx-3)', letterSpacing: '0.1em' }}>
+                    {ev.num}
                   </span>
                 </div>
 
                 {/* Name */}
-                <div>
-                  <h3
-                    id={`featured-${event.id}-name`}
-                    className="font-black text-lg text-[#F2EEE4] leading-tight mb-0.5"
-                    style={{ fontFamily: "'Playfair Display', serif" }}
-                  >
-                    {event.name}
+                <div style={{ paddingLeft: '0.5rem' }}>
+                  <h3 id={`feat-${ev.id}`} className="display" style={{ fontSize: 'clamp(1.25rem,3vw,1.5rem)', color: 'var(--tx)', marginBottom: '0.25rem' }}>
+                    {ev.name}
                   </h3>
-                  <p className="text-ui text-xs font-semibold tracking-widest uppercase" style={{ color: '#E8B84B' }}>
-                    {event.subtitle}
+                  <p className="ui" style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--gold)' }}>
+                    {ev.subtitle}
                   </p>
                 </div>
 
-                {/* Desc */}
-                <p className="text-sm leading-relaxed flex-grow" style={{ color: '#7A7A88' }}>
-                  {event.description}
+                {/* Description */}
+                <p style={{ fontSize: '0.84rem', color: 'var(--tx-2)', lineHeight: 1.65, paddingLeft: '0.5rem', flexGrow: 1 }}>
+                  {ev.description}
                 </p>
 
                 {/* Meta */}
-                <div className="flex gap-4 pt-2 border-t" style={{ borderColor: '#1E1E28' }}>
+                <div style={{ display: 'flex', gap: '1.25rem', paddingLeft: '0.5rem', paddingTop: '0.75rem', borderTop: '1px solid var(--border)', marginTop: 'auto' }}>
                   <div>
-                    <p className="text-ui text-[0.55rem] uppercase tracking-widest mb-0.5" style={{ color: '#4A4A58' }}>Team</p>
-                    <p className="text-ui text-xs font-semibold text-[#F2EEE4]">{event.teamSize}</p>
+                    <p className="ui" style={{ fontSize: '0.52rem', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--tx-3)', marginBottom: '0.2rem' }}>Team</p>
+                    <p className="ui" style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--tx)' }}>{ev.teamSize}</p>
                   </div>
                   <div>
-                    <p className="text-ui text-[0.55rem] uppercase tracking-widest mb-0.5" style={{ color: '#4A4A58' }}>Fee</p>
-                    <p className="text-ui text-xs font-semibold" style={{ color: '#E8B84B' }}>{event.fee}</p>
+                    <p className="ui" style={{ fontSize: '0.52rem', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--tx-3)', marginBottom: '0.2rem' }}>Fee</p>
+                    <p className="ui" style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--gold)' }}>{ev.fee}</p>
                   </div>
                 </div>
 
                 {/* CTA */}
                 <button
-                  onClick={() => { navigate(`/events/${event.id}`); window.scrollTo({ top: 0 }); }}
-                  className="btn btn-ghost w-full"
-                  style={{ minHeight: '44px', fontSize: '0.72rem' }}
-                  aria-label={`View details for ${event.name}`}
+                  className="btn btn-ghost"
+                  style={{ width: '100%', marginLeft: '0', minHeight: '44px', fontSize: '0.72rem' }}
+                  onClick={() => { nav(`/events/${ev.id}`); window.scrollTo({ top: 0 }); }}
+                  aria-label={`View details for ${ev.name}`}
                 >
                   View Details
                 </button>
@@ -301,7 +309,7 @@ function FeaturedEvents() {
   );
 }
 
-// ── Final CTA ────────────────────────────────────────────────
+/* ── FINAL CTA ──────────────────────────────────────────── */
 function FinalCTA() {
   const ref = useRef<HTMLElement>(null);
   useReveal(ref);
@@ -309,26 +317,34 @@ function FinalCTA() {
   return (
     <section
       ref={ref}
-      className="section border-t"
-      style={{ borderColor: '#1E1E28', background: '#111115' }}
-      aria-labelledby="cta-heading"
+      className="section"
+      style={{ borderTop: '1px solid var(--border)', background: 'var(--bg-1)', position: 'relative', overflow: 'hidden' }}
+      aria-labelledby="cta-h"
     >
-      <div className="container">
-        <div className="reveal text-center max-w-lg mx-auto">
-          <span className="section-label justify-center">Join Us</span>
-          <h2 id="cta-heading" className="section-heading mb-4">Ready to Compete?</h2>
-          <p className="text-[#7A7A88] text-sm leading-relaxed mb-8">
-            Register for YANTRIKA 2026 through the official registration form. Choose your event and compete with the best.
+      {/* Background accent */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true"
+        style={{ background: 'radial-gradient(ellipse 60% 70% at 50% 100%, rgba(234,184,74,0.05) 0%, transparent 70%)' }} />
+      <div className="eng-grid absolute inset-0" aria-hidden="true" style={{ opacity: 0.4 }} />
+
+      <div className="container relative z-10 text-center">
+        <div className="reveal" style={{ maxWidth: '520px', margin: '0 auto' }}>
+          <p className="section-eyebrow" style={{ justifyContent: 'center' }}>Join Us</p>
+          <h2 id="cta-h" className="section-h" style={{ marginBottom: '1rem' }}>Ready to Compete?</h2>
+          <p style={{ color: 'var(--tx-2)', fontSize: '0.9rem', lineHeight: 1.7, marginBottom: '2.25rem' }}>
+            Choose your event and register through the official YANTRIKA 2026 form. No account needed.
           </p>
           <a
-            id="home-cta-register-btn"
+            id="home-final-register"
             href={REGISTER_NOW_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-gold"
-            style={{ minHeight: '52px', padding: '0.875rem 2.5rem', fontSize: '0.85rem', width: '100%', maxWidth: '320px' }}
+            style={{ minHeight: '52px', padding: '0.875rem 2.75rem', fontSize: '0.82rem', width: '100%', maxWidth: '280px' }}
           >
             Register Now
+            <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5-5 5M6 12h12" />
+            </svg>
           </a>
         </div>
       </div>
@@ -336,13 +352,13 @@ function FinalCTA() {
   );
 }
 
-// ── Home Page ────────────────────────────────────────────────
+/* ── HOME ───────────────────────────────────────────────── */
 export default function Home() {
   return (
     <div className="page-enter page-body">
       <Hero />
-      <AboutSnapshot />
-      <CategoriesSection />
+      <AboutSnap />
+      <Categories />
       <FeaturedEvents />
       <FinalCTA />
     </div>
