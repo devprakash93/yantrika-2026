@@ -1,164 +1,138 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
-import { X, Bell } from 'lucide-react';
-import NotificationPanel from './NotificationPanel';
-import { notifications } from '../data/notifications';
+import { REGISTER_NOW_URL } from '../config';
 
-const NAV_LINKS = [
-  { name: 'HOME',     path: '/' },
-  { name: 'EVENTS',   path: '/events' },
-  { name: 'SCHEDULE', path: '/schedule' },
-  { name: 'ABOUT',    path: '/about' },
-  { name: 'REGISTER', path: '/events' },
+const navLinks = [
+  { label: 'Home',   href: '#home'   },
+  { label: 'About',  href: '#about'  },
+  { label: 'Events', href: '#events' },
+  { label: 'Rules',  href: '#rules'  },
+  { label: 'Contact',href: '#contact'},
 ];
 
 export default function Navbar() {
-  const [indexOpen, setIndexOpen] = useState(false);
-  const [notifOpen, setNotifOpen] = useState(false);
-  const [scrolled, setScrolled]   = useState(false);
-  const location = useLocation();
-
-  const unread = notifications.filter(n => n.isNew).length;
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 40);
-    window.addEventListener('scroll', fn, { passive: true });
-    return () => window.removeEventListener('scroll', fn);
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Close overlay on route change
-  useEffect(() => { setIndexOpen(false); setNotifOpen(false); }, [location.pathname]);
+  const closeMenu = () => setMenuOpen(false);
+
+  const scrollTo = (href: string) => {
+    closeMenu();
+    const el = document.querySelector(href);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <>
-      {/* ─── Main nav bar ─────────────────────────────────────── */}
       <header
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-          scrolled || indexOpen ? 'bg-paper/90 backdrop-blur-md border-b border-rule' : 'bg-transparent'
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled ? 'bg-[#0A0A0A]/95 backdrop-blur-md border-b border-[#1E1E1E]' : 'bg-transparent'
         }`}
+        style={{ fontFamily: "'Space Grotesk', sans-serif" }}
       >
-        <div className="max-w-screen-xl mx-auto px-6 md:px-10 h-[64px] flex items-center justify-between">
+        <div className="section-container">
+          <nav className="flex items-center justify-between h-16 md:h-18">
 
-          {/* Left: wordmark */}
-          <Link to="/" className="flex items-center gap-3" aria-label="YANTRIKA 2026 Home">
-            <span className="font-display text-xl tracking-tight text-ink">YANTRIKA<span className="text-orange">26</span></span>
-          </Link>
+            {/* Brand */}
+            <a
+              href="#home"
+              onClick={(e) => { e.preventDefault(); scrollTo('#home'); }}
+              className="flex flex-col leading-none group"
+              aria-label="YANTRIKA 2026 — Home"
+            >
+              <span className="text-lg font-bold tracking-[0.12em] text-[#F0EDE6] uppercase group-hover:text-[#C8A96A] transition-colors duration-200">
+                YANTRIKA
+              </span>
+              <span className="text-[0.6rem] font-medium tracking-[0.2em] text-[#C8A96A] uppercase">
+                2026
+              </span>
+            </a>
 
-          {/* Center/Right: desktop nav */}
-          <nav className="hidden lg:flex items-center gap-8" aria-label="Primary navigation">
-            {NAV_LINKS.slice(0, 4).map(link => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`font-mono text-[11px] tracking-[0.18em] transition-colors ${
-                  location.pathname === link.path
-                    ? 'text-orange'
-                    : 'text-muted hover:text-ink'
-                }`}
+            {/* Desktop Nav Links */}
+            <ul className="hidden md:flex items-center gap-8" role="list">
+              {navLinks.map((link) => (
+                <li key={link.href}>
+                  <a
+                    href={link.href}
+                    onClick={(e) => { e.preventDefault(); scrollTo(link.href); }}
+                    className="text-sm font-medium tracking-wide text-[#A0A09A] hover:text-[#F0EDE6] transition-colors duration-200 relative group"
+                  >
+                    {link.label}
+                    <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-[#C8A96A] group-hover:w-full transition-all duration-300" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+
+            {/* Desktop CTA */}
+            <div className="hidden md:flex items-center">
+              <a
+                id="navbar-register-btn"
+                href={REGISTER_NOW_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary text-xs px-5 py-2.5"
               >
-                {link.name}
-              </Link>
-            ))}
+                Register Now
+              </a>
+            </div>
+
+            {/* Mobile Hamburger */}
+            <button
+              id="mobile-menu-btn"
+              className="md:hidden flex flex-col gap-1.5 p-2 -mr-2 group"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={menuOpen}
+            >
+              <span className={`block w-5 h-0.5 bg-[#F0EDE6] transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+              <span className={`block w-5 h-0.5 bg-[#F0EDE6] transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`} />
+              <span className={`block w-5 h-0.5 bg-[#F0EDE6] transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+            </button>
+
           </nav>
-
-          {/* Right: actions (Notification & INDEX) */}
-          <div className="flex items-center gap-4">
-            {/* Notification bell */}
-            <button
-              onClick={() => setNotifOpen(true)}
-              className="relative p-2 text-muted hover:text-ink transition-colors flex items-center gap-2"
-              aria-label="Notifications"
-            >
-              <Bell className="w-4 h-4" />
-              <span className="hidden md:inline font-mono text-[10px] tracking-widest mt-0.5">NOTIFICATIONS</span>
-              {unread > 0 && (
-                <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-orange rounded-full" />
-              )}
-            </button>
-
-            {/* INDEX button */}
-            <button
-              onClick={() => setIndexOpen(true)}
-              data-cursor-menu
-              className="flex items-center gap-2 font-mono text-[11px] tracking-[0.2em] text-ink border border-ink px-4 py-2 hover:bg-ink hover:text-paper transition-colors"
-              aria-label="Open navigation index"
-            >
-              INDEX
-            </button>
-          </div>
         </div>
       </header>
 
-      {/* ─── Full-screen INDEX overlay ────────────────── */}
-      <AnimatePresence>
-        {indexOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-0 z-50 bg-[#0F0F0D] flex flex-col"
-          >
-            {/* Overlay header */}
-            <div className="flex justify-between items-center px-6 md:px-10 h-[64px] border-b border-white/10">
-              <span className="font-mono text-[11px] tracking-[0.2em] text-white/40">
-                NAVIGATION INDEX // SYS.ACTIVE
-              </span>
-              <button
-                onClick={() => setIndexOpen(false)}
-                className="flex items-center gap-2 font-mono text-[11px] tracking-[0.2em] text-white/60 hover:text-white transition-colors"
-                aria-label="Close navigation"
-              >
-                CLOSE <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Nav links */}
-            <nav className="flex-1 flex flex-col justify-center px-6 md:px-16 max-w-screen-xl mx-auto w-full">
-              {NAV_LINKS.map((link, i) => (
-                <motion.div
-                  key={link.path + link.name}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.08, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  <Link
-                    to={link.path}
-                    className="flex items-end gap-6 py-4 md:py-6 border-b border-white/5 group"
-                    onClick={() => setIndexOpen(false)}
-                  >
-                    <span className="font-mono text-[12px] md:text-[14px] text-white/20 group-hover:text-orange transition-colors w-8 mb-2">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <span className="font-display text-5xl md:text-7xl lg:text-8xl text-white group-hover:text-orange transition-colors leading-none tracking-tight">
-                      {link.name}
-                    </span>
-                  </Link>
-                </motion.div>
-              ))}
-            </nav>
-
-            {/* Overlay footer */}
-            <div className="px-6 md:px-16 py-8 border-t border-white/10 max-w-screen-xl mx-auto w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-              <div className="flex gap-4">
-                {['TECH', 'CULTURAL', 'GAMING'].map((cat, idx) => (
-                  <div key={cat} className="flex items-center gap-2">
-                    <div className={`w-1.5 h-1.5 rounded-full ${idx === 0 ? 'bg-blue-600' : idx === 1 ? 'bg-pink-600' : 'bg-red-600'}`} />
-                    <span className="font-mono text-[10px] tracking-widest text-white/30">{cat}</span>
-                  </div>
-                ))}
-              </div>
-              <p className="font-mono text-[10px] text-white/20 tracking-widest uppercase">
-                08—09 OCT 2026 · DRIEMS UNIVERSITY · CSE
-              </p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ─── Notification Panel ───────────────────────────────── */}
-      <NotificationPanel isOpen={notifOpen} onClose={() => setNotifOpen(false)} />
+      {/* Mobile Menu Overlay */}
+      <div
+        className={`fixed inset-0 z-40 bg-[#0A0A0A]/98 backdrop-blur-md flex flex-col transition-all duration-300 md:hidden ${
+          menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Navigation menu"
+      >
+        <div className="section-container flex flex-col flex-grow justify-center gap-2 pt-20">
+          {navLinks.map((link, i) => (
+            <a
+              key={link.href}
+              href={link.href}
+              onClick={(e) => { e.preventDefault(); scrollTo(link.href); }}
+              className="block py-4 border-b border-[#1E1E1E] text-2xl font-semibold tracking-wide text-[#F0EDE6] hover:text-[#C8A96A] transition-colors duration-200"
+              style={{ transitionDelay: `${i * 50}ms` }}
+            >
+              {link.label}
+            </a>
+          ))}
+          <div className="pt-8">
+            <a
+              href={REGISTER_NOW_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={closeMenu}
+              className="btn-primary w-full text-center justify-center py-4 text-sm"
+            >
+              Register Now
+            </a>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

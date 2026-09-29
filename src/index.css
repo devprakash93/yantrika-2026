@@ -1,8 +1,12 @@
 @import "tailwindcss";
 @config '../tailwind.config.js';
 
+/* ============================================================
+   YANTRIKA 2026 — Global Design System
+   ============================================================ */
+
 @layer base {
-  *, *::before, *::after { box-sizing: border-box; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   html {
     scroll-behavior: smooth;
@@ -11,19 +15,13 @@
   }
 
   body {
-    background-color: #FAF9F7;
-    color: #0F0F0D;
+    background-color: #0A0A0A;
+    color: #F0EDE6;
     font-family: 'Inter', sans-serif;
     overflow-x: hidden;
-    cursor: none; /* custom cursor handles this */
+    line-height: 1.6;
   }
 
-  /* Restore cursor for touch devices */
-  @media (hover: none) {
-    body { cursor: auto; }
-  }
-
-  /* Reduce motion support */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
@@ -31,37 +29,243 @@
     }
   }
 
-  /* Custom scrollbar */
+  /* Scrollbar */
   ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: #FAF9F7; }
-  ::-webkit-scrollbar-thumb { background: #E0DDD6; }
-  ::-webkit-scrollbar-thumb:hover { background: #8C8C83; }
+  ::-webkit-scrollbar-track { background: #0A0A0A; }
+  ::-webkit-scrollbar-thumb { background: #2A2A2A; border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: #C8A96A; }
 
-  /* Focus visible styles */
+  /* Focus */
   :focus-visible {
-    outline: 2px solid #FF4D00;
+    outline: 2px solid #C8A96A;
     outline-offset: 3px;
   }
 
   /* Selection */
   ::selection {
-    background: #FF4D00;
-    color: #FAF9F7;
+    background: #C8A96A;
+    color: #0A0A0A;
   }
 }
 
-/* Engineering grid background utility */
-.eng-grid {
-  background-image:
-    linear-gradient(to right, rgba(15,15,13,0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(15,15,13,0.04) 1px, transparent 1px);
-  background-size: 64px 64px;
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Ticker / horizontal scroll utility */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 @keyframes ticker {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
-.ticker-track { animation: ticker 18s linear infinite; }
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.6s ease forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease forwards;
+}
+
+.animate-delay-100 { animation-delay: 100ms; }
+.animate-delay-200 { animation-delay: 200ms; }
+.animate-delay-300 { animation-delay: 300ms; }
+.animate-delay-400 { animation-delay: 400ms; }
+.animate-delay-500 { animation-delay: 500ms; }
+
+.ticker-track {
+  animation: ticker 28s linear infinite;
+  white-space: nowrap;
+  display: flex;
+  gap: 0;
+}
 .ticker-track:hover { animation-play-state: paused; }
+
+/* ============================================================
+   SECTION UTILITY
+   ============================================================ */
+
+.section-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .section-container {
+    padding: 0 2.5rem;
+  }
+}
+
+/* ============================================================
+   DECORATIVE ELEMENTS
+   ============================================================ */
+
+/* Subtle dot grid */
+.dot-grid {
+  background-image: radial-gradient(circle, rgba(200, 169, 106, 0.08) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Horizontal rule with gradient */
+.gradient-rule {
+  height: 1px;
+  background: linear-gradient(to right, transparent, #C8A96A, transparent);
+  border: none;
+}
+
+/* Gold accent line */
+.gold-line {
+  display: block;
+  width: 40px;
+  height: 3px;
+  background: #C8A96A;
+  margin-bottom: 1rem;
+}
+
+/* Gold shimmer text */
+.gold-shimmer {
+  background: linear-gradient(90deg, #C8A96A 0%, #F0D898 40%, #C8A96A 60%, #9A7940 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s linear infinite;
+}
+
+/* Observation: for initial hidden elements */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Category badge */
+.category-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border-radius: 2px;
+}
+
+/* Event card */
+.event-card {
+  background: #141414;
+  border: 1px solid #1E1E1E;
+  border-radius: 4px;
+  padding: 1.75rem;
+  transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.event-card:hover {
+  border-color: #C8A96A;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(200, 169, 106, 0.08);
+}
+
+/* Primary button */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #C8A96A;
+  color: #0A0A0A;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.75rem;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-primary:hover {
+  background: #D4B87A;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(200, 169, 106, 0.25);
+}
+
+/* Secondary button */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: #F0EDE6;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.75rem;
+  border: 1px solid rgba(240, 237, 230, 0.3);
+  border-radius: 2px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-secondary:hover {
+  border-color: #C8A96A;
+  color: #C8A96A;
+  transform: translateY(-1px);
+}
+
+/* Small register button for cards */
+.btn-register {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: #C8A96A;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.5rem 1rem;
+  border: 1px solid #C8A96A;
+  border-radius: 2px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+  white-space: nowrap;
+  margin-top: auto;
+  width: 100%;
+}
+
+.btn-register:hover {
+  background: #C8A96A;
+  color: #0A0A0A;
+}

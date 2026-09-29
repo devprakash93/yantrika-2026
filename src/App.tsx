@@ -1,42 +1,42 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import Hero from './components/Hero';
+import About from './components/About';
+import Events from './components/Events';
+import Rules from './components/Rules';
+import Register from './components/Register';
+import Contact from './components/Contact';
 import Footer from './components/Footer';
-import CustomCursor from './components/CustomCursor';
-import Home from './pages/Home';
-import Events from './pages/Events';
-import EventDetails from './pages/EventDetails';
-import Schedule from './pages/Schedule';
-import About from './pages/About';
-import Gallery from './pages/Gallery';
-import FAQ from './pages/FAQ';
-import Contact from './pages/Contact';
-import Search from './pages/Search';
-
-import MobileNav from './components/MobileNav';
 
 function App() {
   return (
-    <Router>
-      <CustomCursor />
-      <div className="flex flex-col min-h-screen bg-paper pb-[68px] md:pb-0">
-        <Navbar />
-        <MobileNav />
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/"           element={<Home />} />
-            <Route path="/events"     element={<Events />} />
-            <Route path="/events/:id" element={<EventDetails />} />
-            <Route path="/schedule"   element={<Schedule />} />
-            <Route path="/about"      element={<About />} />
-            <Route path="/gallery"    element={<Gallery />} />
-            <Route path="/faq"        element={<FAQ />} />
-            <Route path="/contact"    element={<Contact />} />
-            <Route path="/search"     element={<Search />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </Router>
+    <div className="flex flex-col min-h-screen bg-[#0A0A0A]">
+      {/* Sticky navigation */}
+      <Navbar />
+
+      {/* Main content — single page, scroll-based */}
+      <main id="main-content" className="flex-grow">
+        {/* 1. Hero */}
+        <Hero />
+
+        {/* 2. About */}
+        <About />
+
+        {/* 3. Events (Categories + All 12 + Summary Table) */}
+        <Events />
+
+        {/* 4. Rules & Regulations */}
+        <Rules />
+
+        {/* 5. Registration CTA */}
+        <Register />
+
+        {/* 6. Contact */}
+        <Contact />
+      </main>
+
+      {/* Footer */}
+      <Footer />
+    </div>
   );
 }
 
