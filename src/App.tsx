@@ -1,43 +1,57 @@
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import About from './components/About';
-import Events from './components/Events';
-import Rules from './components/Rules';
-import Register from './components/Register';
-import Contact from './components/Contact';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import TopNav from './components/TopNav';
+import BottomNav from './components/BottomNav';
 import Footer from './components/Footer';
 
-function App() {
+import Home from './pages/Home';
+import Events from './pages/Events';
+import EventDetail from './pages/EventDetail';
+import Rules from './pages/Rules';
+import About from './pages/About';
+import Register from './pages/Register';
+
+// Scroll to top on route change
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [pathname]);
+  return null;
+}
+
+function AppLayout() {
   return (
-    <div className="flex flex-col min-h-screen bg-[#0A0A0A]">
-      {/* Sticky navigation */}
-      <Navbar />
+    <div className="flex flex-col min-h-dvh" style={{ background: '#09090B' }}>
+      <TopNav />
+      <ScrollToTop />
 
-      {/* Main content — single page, scroll-based */}
       <main id="main-content" className="flex-grow">
-        {/* 1. Hero */}
-        <Hero />
-
-        {/* 2. About */}
-        <About />
-
-        {/* 3. Events (Categories + All 12 + Summary Table) */}
-        <Events />
-
-        {/* 4. Rules & Regulations */}
-        <Rules />
-
-        {/* 5. Registration CTA */}
-        <Register />
-
-        {/* 6. Contact */}
-        <Contact />
+        <Routes>
+          <Route path="/"                    element={<Home />} />
+          <Route path="/events"              element={<Events />} />
+          <Route path="/events/:id"          element={<EventDetail />} />
+          <Route path="/rules"               element={<Rules />} />
+          <Route path="/about"               element={<About />} />
+          <Route path="/register"            element={<Register />} />
+          {/* Catch-all → home */}
+          <Route path="*"                    element={<Home />} />
+        </Routes>
       </main>
 
-      {/* Footer */}
+      {/* Footer — hidden on mobile (bottom nav replaces it for nav) */}
       <Footer />
+
+      {/* Mobile bottom navigation — always on top */}
+      <BottomNav />
     </div>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <Router>
+      <AppLayout />
+    </Router>
+  );
+}

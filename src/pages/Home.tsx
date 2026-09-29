@@ -1,364 +1,350 @@
-import { useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { motion, useMotionValue, useTransform } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Countdown from '../components/Countdown';
+import { REGISTER_NOW_URL } from '../config';
+import { events, categories, categoryColors, categoryIcons, featuredEventIds } from '../data/events';
 
-// Small reusable label in mono
-const Label = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
-  <span className={`font-mono text-[10px] md:text-[11px] tracking-[0.18em] uppercase text-muted ${className}`}>
-    {children}
-  </span>
-);
-
-// Corner technical marker
-const CornerMark = ({ position }: { position: 'tl' | 'tr' | 'bl' | 'br' }) => {
-  const cls: Record<string, string> = {
-    tl: 'top-6 left-6 border-t border-l',
-    tr: 'top-6 right-6 border-t border-r',
-    bl: 'bottom-6 left-6 border-b border-l',
-    br: 'bottom-6 right-6 border-b border-r',
-  };
-  return (
-    <div className={`absolute ${cls[position]} border-muted/30 w-6 h-6 hidden md:block`} />
-  );
-};
-
-export default function Home() {
-  const heroRef = useRef<HTMLDivElement>(null);
-  const mouseX  = useMotionValue(0);
-  const mouseY  = useMotionValue(0);
-  const [coords, setCoords] = useState({ x: '000.00', y: '000.00' });
-
-  const gridX = useTransform(mouseX, [-1, 1], [-6, 6]);
-  const gridY = useTransform(mouseY, [-1, 1], [-6, 6]);
-  const typoX = useTransform(mouseX, [-1, 1], [-4, 4]);
-  const typoY = useTransform(mouseY, [-1, 1], [-3, 3]);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!heroRef.current) return;
-    const rect   = heroRef.current.getBoundingClientRect();
-    const normX  = ((e.clientX - rect.left) / rect.width  - 0.5) * 2;
-    const normY  = ((e.clientY - rect.top)  / rect.height - 0.5) * 2;
-    mouseX.set(normX);
-    mouseY.set(normY);
-    setCoords({
-      x: (normX * 90 + 20.24).toFixed(2),
-      y: (normY * 40 + 85.82).toFixed(2),
-    });
-  };
-
-  const observe = (el: Element | null, _id: string) => {
+function useReveal(ref: React.RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    const el = ref.current;
     if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => { void entry; },
-      { threshold: 0.15 }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.querySelectorAll('.reveal').forEach((r, i) => {
+              setTimeout(() => r.classList.add('visible'), i * 80);
+            });
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
     );
-    obs.observe(el);
-  };
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [ref]);
+}
 
+// ── Hero ─────────────────────────────────────────────────────
+function Hero() {
+  const navigate = useNavigate();
   return (
-    <div className="bg-paper text-ink font-sans">
+    <section className="hero-section tech-grid" aria-label="YANTRIKA 2026 Hero">
+      {/* Radial glow */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        aria-hidden="true"
+        style={{ background: 'radial-gradient(ellipse 70% 55% at 50% 45%, rgba(232,184,75,0.05) 0%, transparent 70%)' }}
+      />
 
-      {/* ── 01. HERO ─────────────────────────────────────────── */}
-      <section
-        ref={heroRef}
-        onMouseMove={handleMouseMove}
-        className="relative min-h-screen flex flex-col overflow-hidden pt-16"
-        aria-label="Hero"
-      >
-        {/* Engineering grid — reacts to mouse */}
-        <motion.div
-          className="absolute inset-0 eng-grid pointer-events-none"
-          style={{ x: gridX, y: gridY }}
-        />
+      <div className="container relative z-10">
+        <div className="flex flex-col items-center text-center">
 
-        {/* Corner marks */}
-        <CornerMark position="tl" />
-        <CornerMark position="tr" />
-        <CornerMark position="bl" />
-        <CornerMark position="br" />
-
-        {/* Coordinates display (top-right) */}
-        <div className="absolute top-20 right-8 hidden md:flex flex-col items-end gap-1">
-          <Label>X — {coords.x}°N</Label>
-          <Label>Y — {coords.y}°E</Label>
-        </div>
-
-        {/* Node status (bottom-left) */}
-        <div className="absolute bottom-10 left-8 hidden md:flex items-center gap-3">
-          <div className="w-1.5 h-1.5 rounded-full bg-orange animate-pulse" />
-          <Label>NODE — 01 / SYSTEM ACTIVE</Label>
-        </div>
-
-        {/* Scroll indicator (bottom-right) */}
-        <div className="absolute bottom-10 right-8 flex flex-col items-end gap-1">
-          <Label>SCROLL ↓</Label>
-        </div>
-
-        {/* Top labels row */}
-        <div className="flex justify-between items-center px-6 md:px-12 pt-8 pb-0">
-          <Label>DRIEMS UNIVERSITY · CSE, SOE&T</Label>
-          <Label className="hidden sm:block">08—09 OCT 2026</Label>
-        </div>
-
-        {/* ── Main typography ── */}
-        <div className="flex-1 flex items-center px-6 md:px-12 py-12">
-          <motion.div style={{ x: typoX, y: typoY }} className="w-full">
-            {/* YANTRIKA */}
-            <h1
-              className="font-display text-ink leading-none tracking-tight select-none"
-              style={{ fontSize: 'clamp(56px, 13vw, 210px)', lineHeight: 0.88 }}
+          {/* Overline chip */}
+          <div
+            className="inline-flex items-center gap-2 mb-5 px-3 py-1.5 rounded-sm border"
+            style={{ borderColor: 'rgba(232,184,75,0.25)', background: 'rgba(232,184,75,0.05)' }}
+          >
+            <span
+              className="text-[0.6rem] font-bold tracking-[0.2em] uppercase text-[#E8B84B]"
+              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
-              YANTRIKA
-            </h1>
-            {/* 2026 — offset right + orange accent */}
-            <div className="flex">
-              <span
-                className="font-display leading-none tracking-tight select-none ml-[8%] md:ml-[12%]"
-                style={{
-                  fontSize: 'clamp(56px, 13vw, 210px)',
-                  lineHeight: 0.88,
-                  color: '#FF4D00',
-                }}
-              >
-                2026
+              Technical Fest · DRIEMS University
+            </span>
+          </div>
+
+          {/* Main heading */}
+          <h1
+            className="text-display gold-text mb-2"
+            style={{ fontSize: 'clamp(3rem,13vw,8rem)' }}
+          >
+            YANTRIKA
+          </h1>
+          <p
+            className="text-ui font-bold tracking-[0.4em] uppercase mb-1"
+            style={{ fontSize: 'clamp(0.9rem,3vw,1.5rem)', color: '#7A7A88' }}
+          >
+            2026
+          </p>
+          <p
+            className="text-ui font-semibold tracking-[0.15em] uppercase mb-8"
+            style={{ fontSize: 'clamp(0.7rem,2vw,0.85rem)', color: 'rgba(232,184,75,0.6)' }}
+          >
+            Technical Fest
+          </p>
+
+          {/* Countdown */}
+          <div className="w-full max-w-sm mb-8">
+            <Countdown />
+          </div>
+
+          {/* Event meta */}
+          <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6 mb-8 text-sm">
+            <div className="flex items-center gap-2" style={{ color: '#F2EEE4' }}>
+              <svg className="w-4 h-4 flex-shrink-0" style={{ color: '#E8B84B' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6} aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span className="text-ui font-semibold">08–09 October 2026</span>
+            </div>
+            <span className="hidden sm:block w-px h-4" style={{ background: '#1E1E28' }} aria-hidden="true" />
+            <div className="flex items-center gap-2 text-center sm:text-left" style={{ color: '#F2EEE4' }}>
+              <svg className="w-4 h-4 flex-shrink-0" style={{ color: '#E8B84B' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6} aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <span className="text-ui font-medium" style={{ color: '#7A7A88' }}>
+                Academic Block–1, CSE, SOET · DRIEMS University
               </span>
             </div>
+          </div>
 
-            {/* Annotation bar */}
-            <div className="mt-10 md:mt-14 flex flex-wrap items-center gap-6 md:gap-10">
-              <div className="flex items-center gap-4">
-                <div className="h-px w-10 bg-muted/40" />
-                <Label>08.10.26 — 09.10.26</Label>
-                <div className="h-px w-10 bg-muted/40" />
-              </div>
-              <div className="hidden md:flex items-center gap-3">
-                <div className="w-1 h-1 bg-orange rounded-full" />
-                <Label>TECHNICAL FEST</Label>
-                <div className="w-1 h-1 bg-orange rounded-full" />
-                <Label>CULTURAL FEST</Label>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* CTA row */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 px-6 md:px-12 pb-14">
-          <Link
-            to="/events"
-            data-cursor-view
-            className="bg-ink text-paper font-mono text-[11px] tracking-[0.18em] px-8 py-4 hover:bg-orange transition-colors"
-          >
-            ENTER EVENT INDEX →
-          </Link>
-          <Link
-            to="/schedule"
-            className="font-mono text-[11px] tracking-[0.18em] text-muted hover:text-ink transition-colors underline underline-offset-4"
-          >
-            VIEW SCHEDULE
-          </Link>
-        </div>
-      </section>
-
-      {/* ── 02. TICKER ───────────────────────────────────────── */}
-      <div className="border-y border-rule py-3 overflow-hidden bg-paper" aria-hidden>
-        <div className="ticker-track flex gap-10 whitespace-nowrap w-max">
-          {[...Array(2)].map((_, r) => (
-            <span key={r} className="flex gap-10">
-              {['YANTRIKA 2026', '08–09 OCT', 'DRIEMS UNIVERSITY', 'CSE DEPT', 'REGISTER NOW', 'EVENT INDEX', 'YANTRIKA 2026', '08–09 OCT', 'DRIEMS UNIVERSITY', 'CSE DEPT'].map((t, i) => (
-                <span key={i} className="font-mono text-[11px] tracking-[0.18em] text-muted inline-flex items-center gap-10">
-                  {t} <span className="text-orange">·</span>
-                </span>
-              ))}
-            </span>
-          ))}
+          {/* CTAs */}
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+            <button
+              id="hero-explore-btn"
+              onClick={() => { navigate('/events'); window.scrollTo({ top: 0 }); }}
+              className="btn btn-gold btn-full"
+            >
+              Explore Events
+            </button>
+            <a
+              id="hero-register-btn"
+              href={REGISTER_NOW_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-ghost btn-full"
+            >
+              Register Now
+            </a>
+          </div>
         </div>
       </div>
-
-      {/* ── 03. EVENT INDEX PREVIEW ───────────────────────────── */}
-      <EventPreview setObserve={observe} />
-
-      {/* ── 04. ABOUT ─────────────────────────────────────────── */}
-      <AboutSection />
-
-      {/* ── 05. REGISTER CTA ──────────────────────────────────── */}
-      <RegisterCTA />
-    </div>
+    </section>
   );
 }
 
-/* ─────────────────────────────────────────────────────── */
-/*  EVENT PREVIEW                                          */
-/* ─────────────────────────────────────────────────────── */
-import { events } from '../data';
-
-import { getEventTheme } from '../data/eventThemes';
-import { EventGraphic } from '../components/EventGraphics';
-
-const CATEGORY_BLOCKS = [
-  { label: 'TECH',     color: '#1D4ED8', desc: 'Robotics, IoT, Coding & Design' },
-  { label: 'ACADEMIC', color: '#7C3AED', desc: 'Paper, Poster & Quiz events' },
-  { label: 'CULTURAL', color: '#BE185D', desc: 'Flash mob & performance' },
-  { label: 'CREATIVE', color: '#1C1917', extra: '#F5E142', desc: 'Photography & Reels' },
-  { label: 'FOOD',     color: '#EA580C', desc: 'Swaad Sutra food festival' },
-  { label: 'GAMING',   color: '#DC2626', desc: 'BGMI competitive tournament' },
-];
-
-function EventPreview({ setObserve }: { setObserve: (_: Element|null, id: string) => void }) {
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const preview = events.slice(0, 6);
+// ── About Snapshot ───────────────────────────────────────────
+function AboutSnapshot() {
+  const ref = useRef<HTMLElement>(null);
+  useReveal(ref);
+  const navigate = useNavigate();
 
   return (
-    <section ref={el => setObserve(el, 'events')} className="bg-paper">
-      {/* Category color blocks */}
-      <div className="border-y border-rule overflow-x-auto scrollbar-none">
-        <div className="flex min-w-max">
-          {CATEGORY_BLOCKS.map(cat => (
-            <Link
-              key={cat.label}
-              to="/events"
-              className="flex-shrink-0 flex flex-col justify-between p-6 md:p-8 border-r border-rule hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: cat.color, minWidth: 160 }}
-            >
-              <span className="font-mono text-[9px] tracking-[0.2em] text-white/50">{cat.label}</span>
-              <div className="mt-8">
-                <p className="font-display text-xl text-white leading-none">{cat.label}</p>
-                <p className="font-mono text-[9px] text-white/50 mt-1.5 leading-relaxed">{cat.desc}</p>
-              </div>
-            </Link>
-          ))}
+    <section ref={ref} className="section border-t" style={{ borderColor: '#1E1E28' }} aria-labelledby="about-snapshot-heading">
+      <div className="container">
+        <div className="reveal">
+          <span className="section-label">About the Fest</span>
+          <h2 id="about-snapshot-heading" className="section-heading mb-4">
+            What is YANTRIKA 2026?
+          </h2>
+        </div>
+        <div className="reveal" style={{ transitionDelay: '80ms' }}>
+          <p className="text-[#7A7A88] leading-relaxed max-w-2xl mb-5" style={{ fontSize: '0.95rem' }}>
+            YANTRIKA 2026 is a university-level techno-cultural fest organized by the{' '}
+            <strong className="text-[#F2EEE4] font-semibold">Department of Computer Science & Engineering</strong>,{' '}
+            School of Engineering & Technology, DRIEMS University. The fest brings together students to
+            participate in technical challenges, coding competitions, innovation activities, academic
+            presentations, gaming, and cultural events.
+          </p>
+          <button
+            onClick={() => { navigate('/about'); window.scrollTo({ top: 0 }); }}
+            className="btn btn-gold-outline"
+            style={{ minHeight: '42px', padding: '0.6rem 1.25rem', fontSize: '0.75rem' }}
+          >
+            Learn More →
+          </button>
         </div>
       </div>
+    </section>
+  );
+}
 
-      {/* Events list */}
-      <div className="max-w-screen-xl mx-auto px-6 md:px-10 py-16 md:py-24">
-        <div className="flex items-end justify-between mb-10 border-b border-rule pb-6">
-          <div>
-            <Label className="block mb-3 text-muted">02 — EVENT PREVIEW</Label>
-            <h2 className="font-display text-4xl md:text-5xl text-ink leading-none">CHOOSE YOUR ARENA</h2>
-          </div>
-          <Link to="/events" data-cursor-view className="font-mono text-[11px] tracking-widest text-muted hover:text-ink transition-colors hidden md:block">
-            VIEW ALL {events.length} →
-          </Link>
+// ── Categories ───────────────────────────────────────────────
+function CategoriesSection() {
+  const ref = useRef<HTMLElement>(null);
+  useReveal(ref);
+  const navigate = useNavigate();
+
+  return (
+    <section ref={ref} className="section border-t" style={{ borderColor: '#1E1E28', background: '#111115' }} aria-labelledby="categories-heading">
+      <div className="container">
+        <div className="reveal">
+          <span className="section-label">Categories</span>
+          <h2 id="categories-heading" className="section-heading mb-6">Event Categories</h2>
         </div>
-
-        <div className="divide-y divide-rule">
-          {preview.map((event, i) => {
-            const theme    = getEventTheme(event.id);
-            const isHov    = hoveredId === event.id;
+        <div className="category-grid">
+          {categories.map((cat, i) => {
+            const cfg = categoryColors[cat];
             return (
-              <div
-                key={event.id}
-                onMouseEnter={() => setHoveredId(event.id)}
-                onMouseLeave={() => setHoveredId(null)}
-                style={{
-                  borderLeft: `4px solid ${isHov ? theme.primary : 'transparent'}`,
-                  backgroundColor: isHov ? `${theme.primary}08` : 'transparent',
-                }}
-                className="-mx-6 md:-mx-10 px-6 md:px-10 transition-all duration-200"
+              <button
+                key={cat}
+                className="reveal card text-left p-4 cursor-pointer bg-transparent border-none w-full group"
+                style={{ transitionDelay: `${i * 50}ms`, background: '#13131A', border: `1px solid #1E1E28`, borderRadius: '6px' }}
+                onClick={() => { navigate('/events'); window.scrollTo({ top: 0 }); }}
+                aria-label={`View ${cat} events`}
               >
-                <div className="flex items-center gap-4 md:gap-6 py-5 md:py-6">
-                  <motion.span
-                    animate={{ color: isHov ? theme.primary : '#8C8C83', scale: isHov ? 1.15 : 1 }}
-                    className="font-mono text-[12px] font-bold w-8 flex-shrink-0"
-                  >
-                    {String(i + 1).padStart(2, '0')}
-                  </motion.span>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-display leading-none truncate transition-colors" style={{ fontSize:'clamp(19px,3vw,36px)', color: isHov ? theme.primary : '#0F0F0D' }}>
-                      {event.name}
-                    </p>
-                    <p className="font-mono text-[10px] text-muted tracking-widest uppercase mt-1">{event.type}</p>
-                  </div>
-                  <motion.div animate={{ opacity: isHov ? 1 : 0.3 }} className="flex-shrink-0 hidden sm:block">
-                    <EventGraphic type={theme.graphicType} color={theme.primary} muted={theme.muted} size={60}/>
-                  </motion.div>
-                  <Link to={`/events/${event.id}`} data-cursor-view className="font-mono text-[10px] tracking-widest text-muted hover:text-ink transition-colors flex-shrink-0 ml-2">
-                    VIEW →
-                  </Link>
-                </div>
-                <motion.div initial={false} animate={{ height: isHov ? 'auto' : 0, opacity: isHov ? 1 : 0 }} transition={{ duration: 0.22 }} className="overflow-hidden">
-                  <div className="pl-12 pb-6 pr-2 flex flex-col md:flex-row md:items-end gap-4">
-                    <p className="text-sm text-mid leading-relaxed max-w-xl">{event.description}</p>
-                    <Link to={`/events/${event.id}`} data-cursor-register className="font-mono text-[10px] tracking-widest px-6 py-3 text-paper inline-block flex-shrink-0 transition-opacity hover:opacity-80" style={{ backgroundColor: theme.primary }}>
-                      REGISTER →
-                    </Link>
-                  </div>
-                </motion.div>
-              </div>
+                <span className="block text-2xl mb-2" role="img" aria-hidden="true">{categoryIcons[cat]}</span>
+                <p
+                  className="text-xs font-semibold leading-snug transition-colors duration-200 group-hover:text-[#F2EEE4]"
+                  style={{ fontFamily: "'Space Grotesk', sans-serif", color: cfg.text }}
+                >
+                  {cat}
+                </p>
+              </button>
             );
           })}
         </div>
-
-        <div className="mt-8 text-center md:hidden">
-          <Link to="/events" className="font-mono text-[11px] tracking-widest text-muted hover:text-ink underline underline-offset-4">
-            VIEW ALL {events.length} EVENTS →
-          </Link>
-        </div>
       </div>
     </section>
   );
 }
 
-/* ─────────────────────────────────────────────────────── */
-/*  ABOUT SECTION                                          */
-/* ─────────────────────────────────────────────────────── */
-function AboutSection() {
+// ── Featured Events ──────────────────────────────────────────
+function FeaturedEvents() {
+  const ref = useRef<HTMLElement>(null);
+  useReveal(ref);
+  const navigate = useNavigate();
+
+  const featured = events.filter((e) => featuredEventIds.includes(e.id));
+
   return (
-    <section className="border-t border-rule bg-ink text-paper py-24 md:py-32 px-6 md:px-10">
-      <div className="max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-start">
-        <div>
-          <Label className="text-white/30 block mb-4">03 — ABOUT YANTRIKA</Label>
-          <h2
-            className="font-display text-paper leading-none"
-            style={{ fontSize: 'clamp(40px, 6vw, 90px)' }}
-          >
-            MORE THAN<br />A FESTIVAL.
-          </h2>
-        </div>
-        <div className="flex flex-col gap-8">
-          <p className="text-paper/70 text-lg leading-relaxed">
-            YANTRIKA 2026 is the annual technical and cultural festival of the Department of Computer Science and Engineering, School of Engineering & Technology, DRIEMS University. It brings together students across disciplines for two days of intense competition, creative performance, and engineering excellence.
-          </p>
-          <div className="grid grid-cols-3 gap-6 pt-4 border-t border-white/10">
-            {[['2', 'DAYS'], ['10+', 'EVENTS'], ['1', 'CAMPUS']].map(([num, lbl]) => (
-              <div key={lbl}>
-                <p className="font-display text-4xl md:text-5xl text-orange">{num}</p>
-                <Label className="text-white/30 mt-1 block">{lbl}</Label>
-              </div>
-            ))}
+    <section ref={ref} className="section border-t" style={{ borderColor: '#1E1E28' }} aria-labelledby="featured-heading">
+      <div className="container">
+        <div className="reveal flex items-end justify-between mb-6 gap-4">
+          <div>
+            <span className="section-label">Spotlight</span>
+            <h2 id="featured-heading" className="section-heading">Featured Events</h2>
           </div>
+          <button
+            onClick={() => { navigate('/events'); window.scrollTo({ top: 0 }); }}
+            className="text-ui text-xs font-semibold tracking-wide bg-transparent border-none cursor-pointer flex-shrink-0"
+            style={{ color: '#E8B84B' }}
+          >
+            View All →
+          </button>
+        </div>
+
+        <div className="events-grid">
+          {featured.map((event, i) => {
+            const cfg = categoryColors[event.category];
+            return (
+              <article
+                key={event.id}
+                className="reveal event-card"
+                style={{ transitionDelay: `${i * 70}ms` }}
+                aria-labelledby={`featured-${event.id}-name`}
+              >
+                {/* Top row */}
+                <div className="flex items-start justify-between gap-2">
+                  <span
+                    className="text-[2.5rem] leading-none font-black"
+                    style={{ fontFamily: "'Playfair Display', serif", color: '#1E1E28' }}
+                    aria-hidden="true"
+                  >
+                    {event.num}
+                  </span>
+                  <span
+                    className="category-badge"
+                    style={{ color: cfg.text, background: cfg.bg }}
+                  >
+                    {event.category}
+                  </span>
+                </div>
+
+                {/* Name */}
+                <div>
+                  <h3
+                    id={`featured-${event.id}-name`}
+                    className="font-black text-lg text-[#F2EEE4] leading-tight mb-0.5"
+                    style={{ fontFamily: "'Playfair Display', serif" }}
+                  >
+                    {event.name}
+                  </h3>
+                  <p className="text-ui text-xs font-semibold tracking-widest uppercase" style={{ color: '#E8B84B' }}>
+                    {event.subtitle}
+                  </p>
+                </div>
+
+                {/* Desc */}
+                <p className="text-sm leading-relaxed flex-grow" style={{ color: '#7A7A88' }}>
+                  {event.description}
+                </p>
+
+                {/* Meta */}
+                <div className="flex gap-4 pt-2 border-t" style={{ borderColor: '#1E1E28' }}>
+                  <div>
+                    <p className="text-ui text-[0.55rem] uppercase tracking-widest mb-0.5" style={{ color: '#4A4A58' }}>Team</p>
+                    <p className="text-ui text-xs font-semibold text-[#F2EEE4]">{event.teamSize}</p>
+                  </div>
+                  <div>
+                    <p className="text-ui text-[0.55rem] uppercase tracking-widest mb-0.5" style={{ color: '#4A4A58' }}>Fee</p>
+                    <p className="text-ui text-xs font-semibold" style={{ color: '#E8B84B' }}>{event.fee}</p>
+                  </div>
+                </div>
+
+                {/* CTA */}
+                <button
+                  onClick={() => { navigate(`/events/${event.id}`); window.scrollTo({ top: 0 }); }}
+                  className="btn btn-ghost w-full"
+                  style={{ minHeight: '44px', fontSize: '0.72rem' }}
+                  aria-label={`View details for ${event.name}`}
+                >
+                  View Details
+                </button>
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>
   );
 }
 
-/* ─────────────────────────────────────────────────────── */
-/*  REGISTER CTA                                           */
-/* ─────────────────────────────────────────────────────── */
-function RegisterCTA() {
+// ── Final CTA ────────────────────────────────────────────────
+function FinalCTA() {
+  const ref = useRef<HTMLElement>(null);
+  useReveal(ref);
+
   return (
-    <section className="bg-orange py-20 md:py-28 px-6 md:px-10">
-      <div className="max-w-screen-xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
-        <div>
-          <Label className="text-ink/50 block mb-3">04 — REGISTER</Label>
-          <h2 className="font-display text-ink leading-none" style={{ fontSize: 'clamp(36px, 6vw, 88px)' }}>
-            READY TO<br />COMPETE?
-          </h2>
-        </div>
-        <div className="flex flex-col gap-4">
-          <Link
-            to="/events"
-            data-cursor-register
-            className="bg-ink text-paper font-mono text-[11px] tracking-widest px-10 py-5 hover:opacity-80 transition-opacity inline-block"
-          >
-            VIEW EVENT INDEX →
-          </Link>
-          <p className="font-mono text-[10px] text-ink/50 tracking-widest">
-            08—09 OCTOBER 2026 · DRIEMS UNIVERSITY
+    <section
+      ref={ref}
+      className="section border-t"
+      style={{ borderColor: '#1E1E28', background: '#111115' }}
+      aria-labelledby="cta-heading"
+    >
+      <div className="container">
+        <div className="reveal text-center max-w-lg mx-auto">
+          <span className="section-label justify-center">Join Us</span>
+          <h2 id="cta-heading" className="section-heading mb-4">Ready to Compete?</h2>
+          <p className="text-[#7A7A88] text-sm leading-relaxed mb-8">
+            Register for YANTRIKA 2026 through the official registration form. Choose your event and compete with the best.
           </p>
+          <a
+            id="home-cta-register-btn"
+            href={REGISTER_NOW_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-gold"
+            style={{ minHeight: '52px', padding: '0.875rem 2.5rem', fontSize: '0.85rem', width: '100%', maxWidth: '320px' }}
+          >
+            Register Now
+          </a>
         </div>
       </div>
     </section>
+  );
+}
+
+// ── Home Page ────────────────────────────────────────────────
+export default function Home() {
+  return (
+    <div className="page-enter page-body">
+      <Hero />
+      <AboutSnapshot />
+      <CategoriesSection />
+      <FeaturedEvents />
+      <FinalCTA />
+    </div>
   );
 }
