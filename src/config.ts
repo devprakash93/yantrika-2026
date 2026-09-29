@@ -3,7 +3,7 @@
 //  Replace the placeholder strings with actual URLs when ready.
 // ============================================================
 
-export const REGISTER_NOW_URL = "PASTE_GOOGLE_FORM_LINK_HERE";
+export const REGISTER_NOW_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeza7NUfrANUBv-TkIiYrKMRSE7a4hgFCECMc3xLOgRuPMiRw/viewform";
 
 export const RULES_URL = "PASTE_RULES_DOCUMENT_LINK_HERE";
 
